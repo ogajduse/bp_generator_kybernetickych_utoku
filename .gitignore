@@ -6,6 +6,9 @@ thesis.sty
 ## Mine thesis specific
 sablona-prace.pdf
 
+## Vlna backup files
+*.te~
+
 ## Core latex/pdflatex auxiliary files:
 *.aux
 *.lof
