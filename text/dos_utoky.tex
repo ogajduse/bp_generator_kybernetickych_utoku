@@ -1,14 +1,14 @@
 % !TeX spellcheck = cs_CZ
 \chapter[DoS útoky]{DoS útoky}
-V této kapitole budou rozebrány \zk{zk_dos} útoky, jejich princip, charakteristika a následně dělení. Dále tato kapitola zmiňuje využití \zk{zk_ddos} útoků jako služby. V závěru jsou zmíněny implementované útoky.
+V~této kapitole budou rozebrány \zk{zk_dos} útoky, jejich princip, charakteristika a následně dělení. Dále tato kapitola zmiňuje využití \zk{zk_ddos} útoků jako služby. V~závěru jsou zmíněny implementované útoky.
 
 \section{Charakteristika}
 \zk{zk_dos} lze charakterizovat jako kybernetický útok, který si klade za cíl znepřístupnění
- cílové služby legitimním uživatelům. Využívají jedné nebo více zranitelností v implementaci
+ cílové služby legitimním uživatelům. Využívají jedné nebo více zranitelností v~implementaci
  konkrétního software. Ve své podstatě každá stanice se může stát cílem, obětí, útoku
  \zk{zk_dos}. \zk{zk_dos} útoky se mezi útočníky velmi rychle staly populárními a tento trend
  se nemění \cite{akamai_q2_2017}. Realizace \zk{zk_dos} útoku není nikterak obtížná a
- nevyžaduje z útočníkovy strany hluboké znalosti, jelikož nástroje k jejich provedení jsou
+ nevyžaduje z~útočníkovy strany hluboké znalosti, jelikož nástroje k~jejich provedení jsou
  běžně dostupné, viz. kapitola \ref{chap:nastroje_pro_dos}. Fakt, že narušit činnost sítě bývá
  jednodušší, než do ní získat přístup podporuje tento trend a jejich rozšířenost. 
 
@@ -17,9 +17,9 @@ zlomyslnost nebo smokescreen coby prostředek krytí jiného současně provád�
 určitá forma protestu. Dalšími motivy mohou být také uznání hackerské komunity nebo také
 politické politický motiv.
 
-Velká část útoků využívá nedostatků v architektuře rodiny protokolů TCP/IP, které byly k tomu,
-aby byly funkční, nikoliv bezpečné. Používaly se v otevřeném a důvěryhodném prostředí, čemuž v
-dnešní době není.
+Velká část útoků využívá nedostatků v~architektuře rodiny protokolů TCP/IP, které byly k~tomu,
+aby byly funkční, nikoliv bezpečné. Používaly se v~otevřeném a důvěryhodném prostředí, čemuž
+v~dnešní době není.
 
 Trend naznačuje rostoucí počet druhu a implementací jednotlivých útoků, proto bychom měli
 věnovat pozornost a určité úsilí na ochranu proti nim. Útočník je ve výhodě, jelikož nelze
@@ -27,41 +27,41 @@ jednoznačně predikovat cíl jeho útoku.
 
 
 \section{Typy útoků}
-\subsection{Útok z jednoho zdroje a útok distribuovaný}
-\zk{zk_dos} útoky mohou být prováděny z jednoho místa, což je méně časté, jelikož při
-\zk{zk_dos} útoku není útočník z důvodu malé šířky pásma schopen vygenerovat dostatečný síťový
+\subsection{Útok z~jednoho zdroje a útok distribuovaný}
+\zk{zk_dos} útoky mohou být prováděny z~jednoho místa, což je méně časté, jelikož při
+\zk{zk_dos} útoku není útočník z~důvodu malé šířky pásma schopen vygenerovat dostatečný síťový
 provoz na to, aby způsobil odepření služby na cíli svého útoku. Lze tedy jeho účinek znásobit a
-to použitím většího počtu útočících stanic. Takový útok nazýváme \zkratka{zk_ddos}. V případě
+to použitím většího počtu útočících stanic. Takový útok nazýváme \zkratka{zk_ddos}. V~případě
 \zk{zk_dos} útoku není útočník mnohdy schopen vygenerovat dostatečný síťový provoz na to, aby
 způsobil odepření služby na cíli svého útoku.
 
 Pro distribuovaný \zk{zk_dos} útok je charakteristický velmi vysoký počet uživatelských stanic,
-či serverů, použitých k realizaci tohoto útoku. Pohybujeme se v řádech desítek, stovek až
+či serverů, použitých k~realizaci tohoto útoku. Pohybujeme se v~řádech desítek, stovek až
 milionů počítačů. 
-Často jsou tyto počítače napadeny virem, trojským koněm nebo programem, který v sobě ukrývá
-skrytou funkci a následně jsou zneužitý k účelům \zk{zk_dos} útoku bez vědomí jejich majitele.
-Zajímavým cílem útočníků jsou zařízení IoT, které útočník může následně využít k \zk{zk_dos}
+Často jsou tyto počítače napadeny virem, trojským koněm nebo programem, který v~sobě ukrývá
+skrytou funkci a následně jsou zneužitý k~účelům \zk{zk_dos} útoku bez vědomí jejich majitele.
+Zajímavým cílem útočníků jsou zařízení IoT, které útočník může následně využít k~\zk{zk_dos}
 útoku.
 
 Takové stanice nazýváme \uv{boti} a seskupení více těchto stanic \uv{botnety}. Důvody pro
 vytvoření botnetu jsou větší šířka pásma, šíření spamu nebo redistribuce malware nejen do sítě,
 kde se \uv{bot} nachází. Tito \uv{boti} jsou zapojeni do \zkratka{zk_cnc} infrastruktury spolu
-s \zkratka{zk_irc} servery skrze které může útočník rozesílat instrukce botům. %TODO:zdroj
+s~\zkratka{zk_irc} servery skrze které může útočník rozesílat instrukce botům. %TODO:zdroj
 \zk{zk_irc} servery poskytují centralizovanou správu botů nebo celých botnetů skrze \zk{zk_cnc}
 mechanizmy.
 Útoky vedené skrze tyto botnety dokáží plně zahltit šířku pásma oběti a způsobí tak odepření služby. 
-Botneti mohou být rozmístěni kdekoli po světě, což znesnadňuje ochranu tím, že nelze jednoznačně podle geolokační stopy IP adresy filtrovat provoz z konkrétní země, což je podpořeno možností měnit zdrojovou adresu v IP datagramu, tzv. IP spoofing.
+Botneti mohou být rozmístěni kdekoli po světě, což znesnadňuje ochranu tím, že nelze jednoznačně podle geolokační stopy IP adresy filtrovat provoz z~konkrétní země, což je podpořeno možností měnit zdrojovou adresu v~IP datagramu, tzv. IP spoofing.
 %TODO:obrazek utoku za pomoci spoofovane ip adresy
 %TODO:zde vlozit obrazek ddos utoku
 
 \subsection{Zesílené útoky}
-K zesílení útoku lze použít \uv{reflektor}. Reflektor je prvek v síti, který reflektuje provoz
-iniciovaný ze strany útočníka. Při takovém útoku je \uv{spoofována} zaměněna zdrojovoá adresa v
-IP datagramu. Útočník při trojcestném handshakingu (three-way handshake) zasílá na reflektor
-paket s příznakem SYN se spoofovanou adresou, ten následně odpoví paketem s příznakem SYN/ACK
+K~zesílení útoku lze použít \uv{reflektor}. Reflektor je prvek v~síti, který reflektuje provoz
+iniciovaný ze strany útočníka. Při takovém útoku je \uv{spoofována} zaměněna zdrojovoá adresa
+v~IP datagramu. Útočník při trojcestném handshakingu (three-way handshake) zasílá na reflektor
+paket s~příznakem SYN se spoofovanou adresou, ten následně odpoví paketem s~příznakem SYN/ACK
 na podvrženou IP adresu, tedy adresou oběti. Reflektor tak neodesílá odpověď útočníkovi ale
-oběti. Při dostatečném počtu odeslaných žádostí směrem k oběti dochází k vyčerpání zdrojů, tedy
-k odepření služby. Oběť se tak může domnívat, že na ni útočí reflektory. Pravý útočník zůstává
+oběti. Při dostatečném počtu odeslaných žádostí směrem k~oběti dochází k~vyčerpání zdrojů, tedy
+k~odepření služby. Oběť se tak může domnívat, že na ni útočí reflektory. Pravý útočník zůstává
 skryt. Reflektovaný útok lze označit jako \zkratka{zk_drdos}.
 
 Jiným typem jsou takzvané \uv{amplifikované} útoky za použití \uv{amplifikátoru}.
@@ -69,10 +69,10 @@ Jiným typem jsou takzvané \uv{amplifikované} útoky za použití \uv{amplifik
 spoofovanou IP adresu oběti, což tento útok činí silnějším než je přímý útok. Útočník je díky
 tomuto schopen vygenerovat dostatečný síťový provoz pro zahlcení oběti.
 
-Příkladem takové amplifikace může být například dotaz na DNS server, v jehož zóně se nachází
-rozsáhlý TXT záznam. Nebo v případě NTP serveru si můžeme zažádat o 600 adres, které se k němu
+Příkladem takové amplifikace může být například dotaz na DNS server, v~jehož zóně se nachází
+rozsáhlý TXT záznam. Nebo v~případě NTP serveru si můžeme zažádat o~600 adres, které se k~němu
 připojily. Následující tabulka \ref{tab:udp_ampl} zobrazuje, kolikanásobně je větší odpověď od
-reflektoru oproti vyslané žádosti směrem k němu.
+reflektoru oproti vyslané žádosti směrem k~němu.
 
 \begin{table}[]
 	\centering
