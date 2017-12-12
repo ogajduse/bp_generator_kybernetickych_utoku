@@ -19,9 +19,10 @@ zlomyslnost nebo smokescreen coby prostředek krytí jiného současně provád�
 určitá forma protestu. Dalšími motivy mohou být také uznání hackerské komunity nebo také
 politické politický motiv.
 
-Velká část útoků využívá nedostatků v~architektuře rodiny protokolů TCP/IP, které byly k~tomu,
-aby byly funkční, nikoliv bezpečné. Používaly se v~otevřeném a důvěryhodném prostředí, čemuž
-v~dnešní době není.
+%TODO opravit lomítko
+Velká část útoků využívá nedostatků v~architektuře rodiny protokolů \zk{zk_tcp}$ \ $\zk{zk_ip},
+které byly k~tomu, aby byly funkční, nikoliv bezpečné. Používaly se v~otevřeném a
+důvěryhodném prostředí, čemuž v~dnešní době není.
 
 Trend naznačuje rostoucí počet druhu a implementací jednotlivých útoků, proto bychom měli
 věnovat pozornost a určité úsilí na ochranu proti nim. Útočník je ve výhodě, jelikož nelze
@@ -30,12 +31,13 @@ jednoznačně predikovat cíl jeho útoku.
 
 \section{Typy útoků}
 \subsection{Útok z~jednoho zdroje a útok distribuovaný}
+\label{subs_ddos}
 \zk{zk_dos} útoky mohou být prováděny z~jednoho místa, což je méně časté, jelikož při
 \zk{zk_dos} útoku není útočník z~důvodu malé šířky pásma schopen vygenerovat dostatečný síťový
-provoz na to, aby způsobil odepření služby na cíli svého útoku. Lze tedy jeho účinek znásobit a
-to použitím většího počtu útočících stanic. Takový útok nazýváme \zkratka{zk_ddos}. V~případě
-\zk{zk_dos} útoku není útočník mnohdy schopen vygenerovat dostatečný síťový provoz na to, aby
-způsobil odepření služby na cíli svého útoku.
+provoz na to, aby způsobil odepření služby na cíli svého útoku. Lze tedy jeho účinek znásobit
+a to použitím většího počtu útočících stanic. Takový útok nazýváme \zkratka{zk_ddos}.
+V~případě \zk{zk_dos} útoku není útočník mnohdy schopen vygenerovat dostatečný síťový provoz
+na to, aby způsobil odepření služby na cíli svého útoku.
 
 Pro distribuovaný \zk{zk_dos} útok je charakteristický velmi vysoký počet uživatelských stanic,
 či serverů, použitých k~realizaci tohoto útoku. Pohybujeme se v~řádech desítek, stovek až
@@ -50,16 +52,17 @@ vytvoření botnetu jsou větší šířka pásma, šíření spamu nebo redistr
 kde se \uv{bot} nachází. Tito \uv{boti} jsou zapojeni do \zkratka{zk_cnc} infrastruktury spolu
 s~\zkratka{zk_irc} servery skrze které může útočník rozesílat instrukce botům. %TODO:zdroj
 \zk{zk_irc} servery poskytují centralizovanou správu botů nebo celých botnetů skrze \zk{zk_cnc}
-mechanizmy. Jedním z mnoha trojských koní je Linux.Kaiten. Jedná se o klienta ovládaného skrze
-\zk{zk_irc} server, který může stahovat a spouštět soubory, provádět \zk{zk_ddos} útoky za
-použití UDP Flood a SYN Flood útoků a také umožňuje spoofing IP adresy.
+mechanizmy. Jedním z mnoha trojských koní je \uv{Linux.Kaiten}. Jedná se o klienta ovládaného 
+skrze \zk{zk_irc} server, který může stahovat a spouštět soubory, provádět \zk{zk_ddos} útoky
+za použití UDP Flood a SYN Flood útoků a také umožňuje spoofing \zk{zk_ip} adresy.
 
 Útoky vedené skrze tyto botnety dokáží plně zahltit šířku pásma oběti a způsobí tak odepření
 služby. 
 Boti mohou být rozmístěni kdekoli po světě, což znesnadňuje ochranu tím, že nelze
-jednoznačně podle geolokační stopy IP adresy filtrovat provoz z~konkrétní země, což je
-podpořeno možností měnit zdrojovou adresu v~IP datagramu, tzv. IP spoofing.
+jednoznačně podle geolokační stopy \zk{zk_ip} adresy filtrovat provoz z~konkrétní země, což je
+podpořeno možností měnit zdrojovou adresu v~\zk{zk_ip} datagramu, tzv. \zk{zk_ip} spoofing.
 %TODO:obrazek utoku za pomoci spoofovane ip adresy
+%http://2.bp.blogspot.com/-rYIV6yeCTeo/UI7d4414dAI/AAAAAAAAAP4/zhmngzNMKyA/s1600/b0004999_07053315.jpg
 %TODO:zde vlozit obrazek ddos utoku
 
 \subsection{Zesílené útoky}
@@ -67,21 +70,22 @@ podpořeno možností měnit zdrojovou adresu v~IP datagramu, tzv. IP spoofing.
 \label{subsec:reflektovane_utoky}
 K~zesílení útoku lze použít \uv{reflektor}. Reflektor je prvek v~síti, který reflektuje provoz
 iniciovaný ze strany útočníka. Při takovém útoku je \uv{spoofována} zaměněna zdrojovoá adresa
-v~IP datagramu. Útočník při trojcestném handshakingu (three-way handshake) zasílá na reflektor
-paket s~příznakem SYN se spoofovanou adresou, ten následně odpoví paketem s~příznakem SYN/ACK
-na podvrženou IP adresu, tedy adresou oběti. Reflektor tak neodesílá odpověď útočníkovi ale
-oběti. Při dostatečném počtu odeslaných žádostí směrem k~oběti dochází k~vyčerpání zdrojů, tedy
-k~odepření služby. Oběť se tak může domnívat, že na ni útočí reflektory. Pravý útočník zůstává
-skryt. Reflektovaný útok lze označit jako \zkratka{zk_drdos}.
+v~\zk{zk_ip} datagramu. Útočník při trojcestném handshakingu (three-way handshake) zasílá na
+reflektor paket s~příznakem SYN se spoofovanou adresou, ten následně odpoví paketem
+s~příznakem SYN/ACK na podvrženou \zk{zk_ip} adresu, tedy adresou oběti. Reflektor tak
+neodesílá odpověď útočníkovi ale oběti. Při dostatečném počtu odeslaných žádostí směrem k~oběti
+dochází k~vyčerpání zdrojů, tedy k~odepření služby. Oběť se tak může domnívat, že na ni útočí
+reflektory. Pravý útočník zůstává skryt. Reflektovaný útok lze označit jako \zkratka{zk_drdos}.
 
 \subsubsection{Amplifikované útoky}
 Jiným typem jsou takzvané \uv{amplifikované} útoky, které využívají \uv{amplifikátoru}.
 \uv{Amplifikátor} amplifikuje, tedy zvětšuje síťový provoz zaslaný útočníkem a zasílá jej na
-spoofovanou IP adresu oběti, což tento útok činí silnějším než je přímý útok. Útočník je díky
+spoofovanou \zk{zk_ip} adresu oběti, což tento útok činí silnějším než je přímý útok. Útočník je díky
 tomuto schopen vygenerovat dostatečný síťový provoz pro zahlcení oběti.
 
 Příkladem takové amplifikace může být například dotaz na DNS server, v~jehož zóně se nachází
-rozsáhlý TXT záznam. Nebo v~případě \zkratka{zk_ntp} serveru si můžeme zažádat o~posledních~600
+rozsáhlý TXT záznam. Nebo v~případě \zkratka{zk_ntp} serveru si můžeme zažádat
+o~posledních~600
 adres, které se k~němu připojily. Následující tabulka \ref{tab:udp_ampl} zobrazuje,
 kolikanásobně je větší odpověď od reflektoru oproti vyslané žádosti směrem k~němu.
 
@@ -109,7 +113,7 @@ kolikanásobně je větší odpověď od reflektoru oproti vyslané žádosti sm
 Pro větší účinek těchto zesílených útoků lze využít namísto \zk{zk_dos} útoku útok \zk{zk_ddos}.
 
 \section{Dělení útoků}
-%Útoky lze také specifikovat a rozdělit podle TCP/IP vrstev, skrze které působí.
+%Útoky lze také specifikovat a rozdělit podle \zk{zk_tcp}/\zk{zk_ip} vrstev, skrze které působí.
 \subsection{Podle počtu útočících zařízení}
 
 \subsection{Podle spotřeby zdrojů}
@@ -130,7 +134,7 @@ není v jeho správě. Vyžadují registraci a za úplatu poskytují stresové t
 možno provádět buď v Bitcoinech nebo přes PayPal. Ceny za tuto službu se pohybují přibližně v
 rozmezí mezi 2-10 americkými dolary. Mnoho takových služeb nabízí i podporu typu 24/7 skrze
 \zkratka{zk_im}. Dostupných bývá povětšinou pár základních útoků založených na protokolech
-\zkratka{zk_tcp}, \zkratka{zk_udp} a \zkratka{zk_http}. Tyto služby využívají také IP spoofing
+\zkratka{zk_tcp}, \zkratka{zk_udp} a \zkratka{zk_http}. Tyto služby využívají také \zk{zk_ip} spoofing
 a zesílení útoku pomocí amplifikátorů \ref{subsec:reflektovane_utoky}. 
 
 Největší hrozbou \zk{zk_ddosaas} útoků je jejich snadná dostupnost. Avšak tyto útoky nejsou
@@ -138,31 +142,115 @@ nikterak sofistikované a nejsou příliš velkou hrozbou pro standardně zabezp
 \cite{DDoSaaS}.
 
 \section{Útoky mířené na síťové zdroje}
+Cílem tohoto útoku je zaplavit celou síť množstvím paketů tak, aby byla spotřebována většina
+šířky pásma konkrétní sítě. Při těchto útocích je obvyklé použití botnetu při jeho samotném
+vykonávání.
 
 \subsection{Záplavové}
+\label{subs_zaplavove}
+Nejběžnější jsou útoky, které používají protokol UDP, který je nespojovaný, nepotvrzovaný a
+bezstavový. Toto jej činí ideálním pro tento typ útoku. Protokol UDP na rozdíl od TCP
+nevyžaduje sestavení spojení, tzv. třícestný handshaking, to útočníkovi dovoluje podvržení
+IP adresy. Při záplavovém útoku útočník zasílá velké množství UDP paketů a volí náhodné
+cílové porty a také IP adresy. Server, oběť, je tak nucen odpovídat na každou takovou
+přijatou zprávu odpovídat zprávou ICMP (Destination unreachable - \uv{Cíl nedosažitelný}),
+čímž spotřebuje velkou šířku pásma a dochází tak k \zk{zk_dos} útoku.
 
-\section{Útoky mířené na serverové zdroje}
+%TODO obrázek UDP floodu
+
+Podobným útokem je ICMP Flood, při němž útočník posílá oběti zprávu \uv{Echo request} a oběť
+na každou takovou musí odpovídat zprávou \uv{Echo reply}, spotřebovává tak velkou šířku
+pásma a dochází k \zk{zk_dos} útoku.
+Záplavové útoky jsou efektivnější v případě použití botnetu, tudíž \zk{zk_ddos} útoku.
+
+%TODO \section{Útoky mířené na serverové zdroje}
 % jak funguje normalne, slabina v tcp/ip, pomale utoky
 
 \section{Útoky mířené na aplikační zdroje}
-Tyto typy útoků se zaměřují na zranitelnosti aplikace samotné aplikace vystupující na 7. vrstvě ISO/OSI modelu. Využívají zranitelností v implementaci samotného aplikačního protokolu nebo aplikace běžící na cílovém serveru. Tato zranitelnost nemusí nutně býti implementační chybou ale jen slabým místem, kterého lze využít. Kupříkladu vyšlu na serverpožadavek, jež je na straně serveru nutno zpracovat a do této akce velké množství výpočetních zdrojů. Je-li takovýchto příchozích žádostí na server vysláno více, dochází na jeho straně k vyčerpání výočetních zdrojů, nelze zpracovat požadavky legitimních uživatelů, čímž dochází k odepření služby a tedy k úspěšnému DoS útoku.
+Tyto typy útoků se zaměřují na zranitelnosti samotné aplikace využívající protokoly 
+7. vrstvy ISO/OSI modelu. Využívají zranitelností v implementaci samotného aplikačního
+protokolu nebo aplikace běžící na cílovém serveru. Tato zranitelnost nemusí nutně býti
+implementační chybou ale jen slabým místem, kterého lze využít. Takovým může být kupříkladu
+situace, kdy vyšleme na server požadavek, jež je na straně serveru nutno zpracovat, čímž
+server spotřebuje velké množství výpočetních zdrojů. Je-li takovýchto příchozích žádostí na
+server vysláno více, dochází na jeho straně k vyčerpání výpočetních zdrojů, nelze zpracovat
+požadavky legitimních uživatelů, čímž dochází k odepření služby a tedy k úspěšnému DoS útoku.
 
+Tyto útoky využívají nejen záplavovou \ref{subs_zaplavove} techniku, ale i pomalou, kterou je
+kupříkladu Slowloris.
+ 
+Příkladem takových útoků může být HTTP GET Flood, který je prováděn povětšinou botnetem, kdy
+se útočník snaží ze serveru získat kořenovou stránku nebo objemný soubor umístěný na této
+stránce. Server je nucen odesílaný obsah zkopírovat do své paměti a neuvolnit jej po dobu
+trvání spojení, potažmo útoku, čímž v paměti nezbývá místo na legitimní požadavky běžných
+uživatelů.
 
-Příkladem takových útoků může být HTTP GET, který
+Dalším útokem, který cílí na aplikační zdroje je Slowloris, který využívá techniky pomalého
+útoku. Útočník se serverem standardně naváže TCP spojení a oznámí serveru nízkou nebo nulovou
+velikost okna.
 
-Dalším útokem cílícím na aplikační zdroje je
+Takových spojení vytvoří co nejvíce a snaží se je udržet otevřená po co nejdelší dobu.
+Server pak útočníkem požadovaná data rozdělí do většího poctu menších častí v závislosti na
+velikosti okna. V případě více takových spojení je server zaneprázdněn po dlouhou dobu a
+další navázání dalších spojení odmítá, čímž se stává nedostupným a dochází tedy k \zk{zk_dos}
+útoku.
 
-Do této kategorie útoků lze zařadit taky útok XX
-%HTTP GET!!
-%http
-%%vice druhu http utoku
-%slow loris?
+Do této kategorie útoků lze zařadit taky útoky na protokoly DNS, SMTP, SNMP a další.
 %slow read?
 
 \section{Implementované útoky}
-V této kapitole jsou rozebrány útoky, které byly implementovány do aplikace DoSGen.
+V této kapitole jsou rozebrány útoky, které byly implementovány do aplikace\newline DoSGen.
 
 \subsection{NTP flood}
-Tento útok využívá funcke monlist, která vrací seznam IP adres posledních 600 klientů připojených k NTP serveru.
+%http://www.ntp.org/documentation.html
+%https://www.csirt.cz/page/2793/prevence-zneuziti-ntp-k-ntp-amplification-utokum/
+%TODO schéma útoku
+Protokol aplikační vrstvy, \zk{zk_ntp} slouží k synchronizaci času mezi stanicemi v síti.
+Využívá protokol UDP a komunikuje na portu 123.
+
+Tento útok se zaměřuje na zneužití příkaz monlist, která vrací seznam \zk{zk_ip} adres
+posledních 600 klientů připojených k \zk{zk_ntp} serveru. Primárně tento příkaz slouží k
+monitorování provozu na serveru. Dotaz s kódem žádosti 42 \uv{MON\_GETLIST\_1}  můžeme vidět
+na obr.  \ref{fig:monlist_get_wireshark-img}. Útočník se tedy zaměřuje na získání co
+největší amplifikace, tedy toho, aby odpověď zaslaná na podvrženou \zk{zk_ip} adresu oběti
+byla několikanásobně větší než dotaz zaslaný ze strany útočníka. \zk{zk_ntp} server však
+nedokáže identifikovat, zda je či není zdrojová adresa podvržena.
+Tento útok lze kategorizovat jako amplifikační útok, kde amplifikací je právě odpověď
+\zk{zk_ntp} serveru, kterou provádí funkce monlist.
+
+%obrazek-screen wireshark
+\begin{figure} [ht]
+	\centering
+	\includegraphics[width=0.9\textwidth]{obrazky/mon_getlist_1_wireshark.png} %.pdf
+	\caption{Dotaz na NTP server s kódem žádosti 42 - monlist}
+	\label{fig:monlist_get_wireshark-img}
+\end{figure}
+
+Útočníci si průběžně mapují \zk{zk_ntp} servery, které lze takto zneužít a použijí je k 
+DDoS útoku.
+Oběť je tak zahlcena provozem ze všech těchto \zk{zk_ntp} serverů a nezbývá dostatek šířky
+pásma pro komunikaci s legitimními uživateli (klienty), pro které se tak služba běžící na
+serveru, který se stal obětí, stane nedostupnou. Dochází tedy k odepření služby a úspěšnému
+DDoS útoku.
+
+To, zda je náš server zranitelný lze zjistit pomocí příkazu \texttt{ntpdc}\footnote{Příkaz
+\texttt{ntpdc} je ve verzi ntp-4.2.8 zastaralý, používá se \texttt{ntpq} jako náhrada.}.
+Vrací-li nám server odpověď, je zranitelný. Následující ukázka demonstruje právě zmíněné.
+Výstup příkazu \texttt{ntpdc} je zkrácen na prvních deset řádků výstupu a ořezán zprava o
+tři sloupce, a to o \uv{rstr}, \uv{avgint} a \uv{lstint}. Ve druhém příkazu lze vidět, že
+server nám vrací 600 záznamů nepočítaje první dva řádky výpisu.
 
 
+%ntpdc výstup, ukázka počtu záznamů
+\lstinputlisting[language=bash]{code/ntpdc_monlist.sh}
+
+Nejjednodušší ochranou proti tomuto útoku je aktualizace \zk{zk_ntp} serveru na verzi 4.2.7p26, kde
+je příkaz \texttt{monlist} zcela odstraněn. Chceme-li zůstat na aktuální verzi \zk{zk_ntp} serveru,
+je nutno změnit konfiguraci v souboru \texttt{/etc/ntp.conf}, a to přidáním direktivy
+\texttt{noquery} do řádku začínajícího slovy \uv{\texttt{restrict default}} a následně přidáním
+\texttt{disable monitor} na nový řádek konfiguračního souboru. 
+Celá tato zranitelnost byla popsána v CVE-2013-5211. %TODO citovat CVE
+
+Balíček \zk{zk_ntp} serveru pro některé distribuce již v prvotní čisté instalaci obsahuje korektně
+nastavený konfigurační soubor. Například v systémech RHEL a Fedora byla tato direktiva
+přítomna dlouho před vydáním tohoto \zk{zk_cve}. %TODO citovat specfile nebo bugzillu?
