@@ -145,10 +145,24 @@ nikterak sofistikované a nejsou příliš velkou hrozbou pro standardně zabezp
 % jak funguje normalne, slabina v tcp/ip, pomale utoky
 
 \section{Útoky mířené na aplikační zdroje}
+Tyto typy útoků se zaměřují na zranitelnosti aplikace samotné aplikace vystupující na 7. vrstvě ISO/OSI modelu. Využívají zranitelností v implementaci samotného aplikačního protokolu nebo aplikace běžící na cílovém serveru. Tato zranitelnost nemusí nutně býti implementační chybou ale jen slabým místem, kterého lze využít. Kupříkladu vyšlu na serverpožadavek, jež je na straně serveru nutno zpracovat a do této akce velké množství výpočetních zdrojů. Je-li takovýchto příchozích žádostí na server vysláno více, dochází na jeho straně k vyčerpání výočetních zdrojů, nelze zpracovat požadavky legitimních uživatelů, čímž dochází k odepření služby a tedy k úspěšnému DoS útoku.
+
+
+Příkladem takových útoků může být HTTP GET, který
+
+Dalším útokem cílícím na aplikační zdroje je
+
+Do této kategorie útoků lze zařadit taky útok XX
+%HTTP GET!!
 %http
 %%vice druhu http utoku
 %slow loris?
 %slow read?
 
 \section{Implementované útoky}
+V této kapitole jsou rozebrány útoky, které byly implementovány do aplikace DoSGen.
+
+\subsection{NTP flood}
+Tento útok využívá funcke monlist, která vrací seznam IP adres posledních 600 klientů připojených k NTP serveru.
+
 
