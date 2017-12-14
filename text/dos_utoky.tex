@@ -24,7 +24,7 @@ Velká část útoků využívá nedostatků v~architektuře rodiny protokolů T
 aby byly funkční, nikoliv bezpečné. Používaly se v~otevřeném a důvěryhodném prostředí, čemuž
 v~dnešní době není.
 
-Trend naznačuje rostoucí počet druhu a implementací jednotlivých útoků, proto bychom měli
+Trend naznačuje rostoucí počet druhů a implementací jednotlivých útoků, proto bychom měli
 věnovat pozornost a určité úsilí na ochranu proti nim. Útočník je ve výhodě, jelikož nelze
 jednoznačně predikovat cíl jeho útoku.
 
@@ -70,7 +70,7 @@ podpořeno možností měnit zdrojovou adresu v~IP datagramu, tzv. IP spoofing.
 \subsubsection{Reflektované útoky}
 \label{subsec:reflektovane_utoky}
 K~zesílení útoku lze použít \uv{reflektor}. Reflektor je prvek v~síti, který reflektuje provoz
-iniciovaný ze strany útočníka. Při takovém útoku je \uv{spoofována} zaměněna zdrojovoá adresa
+iniciovaný ze strany útočníka. Při takovém útoku je \uv{spoofována}, tedy zaměněna zdrojová adresa
 v~IP datagramu. Útočník při trojcestném handshakingu (three-way handshake) zasílá na reflektor
 paket s~příznakem SYN se spoofovanou adresou, ten následně odpoví paketem s~příznakem SYN/ACK
 na podvrženou IP adresu, tedy adresou oběti. Reflektor tak neodesílá odpověď útočníkovi ale
@@ -269,6 +269,12 @@ server nám vrací 600 záznamů nepočítaje první dva řádky výpisu.
 %ntpdc výstup, ukázka počtu záznamů
 %\lstinputlisting[language=bash]{code/ntpdc_monlist.sh}
 %TODO přidat screenshot namisto listingu
+\begin{figure} [ht]
+	\centering
+	\includegraphics[width=0.9\textwidth]{obrazky/ntpdc_monlist_terminal_screen.png} %.pdf
+	\caption{Dotaz na NTP server s kódem žádosti 42 - monlist skrze příkaz \texttt{ntpdc}}
+	\label{fig:monlist_get_terminal-img}
+\end{figure}
 
 Nejjednodušší ochranou proti tomuto útoku je aktualizace NTP serveru na verzi 4.2.7p26, kde
 je příkaz \texttt{monlist} zcela odstraněn. Chceme-li zůstat na aktuální verzi NTP serveru,
