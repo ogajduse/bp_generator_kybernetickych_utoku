@@ -1,1 +1,7 @@
+% !TeX spellcheck = cs_CZ
 \chapter{Testování}
+\label{chap:testovani}
+V průběhu vývoje a testování jsem využíval nástroje Wireshark pro sledování síťového provozu mezi útočníkem a obětí. Všechny útoky byly testovány na běžné uživatelské stanici s operačním systémem Linux, konkrétně Fedora 27. Tato stanice sloužila pouze jako generátor útoků. Stanice vystupující při útoku jako \uv{reflektor} nebo \uv{amplifikátor} a \uv{oběť} jsou plně virtualizované operační systémy skrze hypervizor kernelu (KVM) přistupující ke stejnému síťovému rozhraní \texttt{vnet0}, na něž je připojena i hostitelská stanice. Toto rozhraní je od internetu odděleno prostřednictvím NAT. Pro snazší správu virtualizovaných stanic bylo použito aplikace Virtual Machine Manager ve verzi 1.4.3.
+
+
+%ntpdc -n -c monlist 3.cz.pool.ntp.org

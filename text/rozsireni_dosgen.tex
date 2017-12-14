@@ -1,6 +1,6 @@
 % !TeX spellcheck = cs_CZ
 \chapter{Rozšíření nástroje DoSgen}
-Úkolem tohoto semestrálního projektu bylo rozšíření software generující kybernetické útoky. Tato aplikace nese název DoSgen a je napsána v jazyce C. Původním autorem této aplikace je Peter Halaška, který ji vytvořil v rámci své diplomové práce. Tento nástroj byl rozšířen Filipem Grégrem, také coby diplomová práce. Tento autor své útoky z důvodu neproveditelnosti v rámci původní struktury implementoval v jazyce C++.
+Úkolem tohoto semestrálního projektu bylo rozšíření software generující kybernetické útoky. Tato aplikace nese název DoSgen a je napsána v jazyce C. Původním autorem této aplikace je Peter Halaška, který ji vytvořil v rámci své diplomové práce. Tento nástroj byl rozšířen Filipem Gregrem, také coby diplomová práce. Tento autor své útoky z důvodu neproveditelnosti v rámci původní struktury implementoval v jazyce C++.
 
 Pro implementaci v rámci své práce jsem si zvolil následující útoky:
 \begin{itemize}
@@ -9,10 +9,9 @@ Pro implementaci v rámci své práce jsem si zvolil následující útoky:
 	\item{SNMP Flood}
 \end{itemize}
 
-Teoretický popis těchto útoků je uveden v kapitole \ref{sec:implementovane_utoky}. V první fázi bylo na místě zvážení, zda-li je možno využít knihovny \texttt{LibDoS} při implementaci vlastních útoků. Povaha této knihovny nebrání implementaci mnou vybraných útoků.
+Teoretický popis těchto útoků je uveden v kapitole \ref{sec:implementovane_utoky}. V první fázi bylo na místě zvážení, zda-li je možno využít knihovny \texttt{LibDoS} při implementaci vlastních útoků. Výsledným zjištěním bylo, že povaha této knihovny nebrání implementaci mnou vybraných útoků.
 
-V průběhu vývoje jsem využíval nástroje Wireshark pro sledování síťového provozu mezi útočníkem a obětí. Všechny útoky byly testovány na běžné uživatelské stanici s operačním systémem Linux, konkrétně Fedora 27. Tato stanice sloužila pouze jako generátor útoků. Stanice vystupující při útoku jako \uv{reflektor} nebo \uv{amplifikátor} a \uv{oběť} jsou plně virtualizované operační systémy skrze hypervizor kernelu (KVM) přistupující ke stejnému síťovému rozhraní \texttt{vnet0}, na něž je připojena i hostitelská stanice. Toto rozhraní je od internetu odděleno prostřednictvím NAT. Pro snazší správu virtualizovaných stanic bylo použito aplikace Virtual Machine Manager ve verzi 1.4.3.
-
+Při vývoji bylo použito prostředí zmíněného v kapitole \ref{chap:testovani}.
 
 \section{Struktura nástroje}
 %dosgen, trafgen wrapper, libdos, tcpgen, tcpgen?, gui
@@ -56,7 +55,8 @@ dnf -y install make pkg-config gcc-c++
 
 \noindent Instalace následujících balíčků je pouze volitelné, jde o užitečné nástroje, které najdou své místo vedle nástroje DoSgen.
 \begin{lstlisting}
-dnf -y install tcptrack nmap httping john iftop nload iputils net-tools
+dnf -y install tcptrack nmap httping john iftop nload \
+iputils net-tools
 \end{lstlisting}
 
 \noindent Dále je potřeba přeložit zdrojový kód. Provedeme příkazem make:
@@ -78,8 +78,18 @@ Původní struktura nástroje zůstala stejná, stávající moduly byly upraven
 
 Prerekvizitou tohoto útoku je 600 klientů, zapsaných v databázi NTP serveru. Toto nelze nasimulovat z jedné uživatelské stanice běžným způsobem. Proto jsem přistoupil k tvorbě nástroje v jazyce Python, pomocí kterého si nasimuluji množství klientů požadujících po NTP serveru aktualizaci času. Tento skript využívá knihoven \texttt{scapy} pro sestavení paketu a \texttt{faker} pro generování náhodné IP adresy.
 
-Dalším krokem bylo umístění konfigurace paketu do souboru \texttt{trafgen\_configs.h}. Do této konfigurace si následně DoSgen doplní zdrojovou a cílovou adresu IP. 
+Dalším krokem bylo umístění konfigurace paketu do hlavičkového souboru \newline \texttt{trafgen\_configs.h}. Do této konfigurace si následně DoSgen doplní zdrojovou a cílovou adresu IP. 
 V dalším kroku byl do souboru \texttt{dosgen.c} doplněn nový přepínač pro tento útok. Při jeho použití je zavolána funkce \texttt{ntp\_flood} z modulu \texttt{argsParse.c}, která zajišťuje validaci vstupních parametrů. Při kladném výsledku validace je zavolána funkce \texttt{prepare\_ntp}, která upravuje konfigurační soubor. Následně je zavolán samotný trafgen a útok je spuštěn.
+
+Teoretický popis tohoto útoku je popsán v kapitole \ref{subsec:ntp_flood}.
 
 
 \section{Použití nástroje}
+Pro spuštění NTP útoku pomocí nástroje dosgen využijme následující příkaz.
+\begin{lstlisting}
+	./dosgen -i virbr0 -P 4 --ntp -s 192.168.124.129 \
+                     -d 192.168.124.14
+\end{lstlisting}
+
+Za parametrem \texttt{-i} následuje název rozhraní, skrze ktere je provoz následně generován. Parametr \texttt{-P} určuje počet jader, kolik je využito pro generování provozu, za ním následuje \texttt{--ntp} znamenající, že z dostupných útoků bude vybrán útok NTP Flood. Parametr \texttt{-s} označuje zdrojovou IP adresu, která bude uvedena v paketu, ve skutečnosti jde o IP adresu oběti. Poslední \texttt{-d} značí IP adresu, na kterou je dotaz zaslán.
+
