@@ -34,10 +34,10 @@ jednoznačně predikovat cíl jeho útoku.
 \label{subs_ddos}
 \zk{zk_dos} útoky mohou být prováděny z~jednoho místa, což je méně časté, jelikož při
 \zk{zk_dos} útoku není útočník z~důvodu malé šířky pásma schopen vygenerovat dostatečný síťový
-provoz na to, aby způsobil odepření služby na cíli svého útoku. Lze tedy jeho účinek znásobit
-a to použitím většího počtu útočících stanic. Takový útok nazýváme \zkratka{zk_ddos}.
-V~případě \zk{zk_dos} útoku není útočník mnohdy schopen vygenerovat dostatečný síťový provoz
-na to, aby způsobil odepření služby na cíli svého útoku.
+provoz na to, aby způsobil odepření služby na cíli svého útoku. Lze tedy jeho účinek znásobit a
+to použitím většího počtu útočících stanic. Takový útok nazýváme \zkratka{zk_ddos}. V~případě
+\zk{zk_dos} útoku není útočník mnohdy schopen vygenerovat dostatečný síťový provoz na to, aby
+způsobil odepření služby na cíli svého útoku.
 
 Pro distribuovaný \zk{zk_dos} útok je charakteristický velmi vysoký počet uživatelských stanic,
 či serverů, použitých k~realizaci tohoto útoku. Pohybujeme se v~řádech desítek, stovek až
@@ -52,15 +52,15 @@ vytvoření botnetu jsou větší šířka pásma, šíření spamu nebo redistr
 kde se \uv{bot} nachází. Tito \uv{boti} jsou zapojeni do \zkratka{zk_cnc} infrastruktury spolu
 s~\zkratka{zk_irc} servery skrze které může útočník rozesílat instrukce botům. %TODO:zdroj
 \zk{zk_irc} servery poskytují centralizovanou správu botů nebo celých botnetů skrze \zk{zk_cnc}
-mechanizmy. Jedním z mnoha trojských koní je \uv{Linux.Kaiten}. Jedná se o klienta ovládaného 
-skrze \zk{zk_irc} server, který může stahovat a spouštět soubory, provádět \zk{zk_ddos} útoky
-za použití UDP Flood a SYN Flood útoků a také umožňuje spoofing \zk{zk_ip} adresy.
+mechanizmy. Jedním z mnoha trojských koní je Linux.Kaiten. Jedná se o klienta ovládaného skrze
+\zk{zk_irc} server, který může stahovat a spouštět soubory, provádět \zk{zk_ddos} útoky za
+použití UDP Flood a SYN Flood útoků a také umožňuje spoofing IP adresy.
 
 Útoky vedené skrze tyto botnety dokáží plně zahltit šířku pásma oběti a způsobí tak odepření
 služby. 
 Boti mohou být rozmístěni kdekoli po světě, což znesnadňuje ochranu tím, že nelze
-jednoznačně podle geolokační stopy \zk{zk_ip} adresy filtrovat provoz z~konkrétní země, což je
-podpořeno možností měnit zdrojovou adresu v~\zk{zk_ip} datagramu, tzv. \zk{zk_ip} spoofing.
+jednoznačně podle geolokační stopy IP adresy filtrovat provoz z~konkrétní země, což je
+podpořeno možností měnit zdrojovou adresu v~IP datagramu, tzv. IP spoofing.
 %TODO:obrazek utoku za pomoci spoofovane ip adresy
 %http://2.bp.blogspot.com/-rYIV6yeCTeo/UI7d4414dAI/AAAAAAAAAP4/zhmngzNMKyA/s1600/b0004999_07053315.jpg
 %TODO:zde vlozit obrazek ddos utoku
@@ -70,22 +70,21 @@ podpořeno možností měnit zdrojovou adresu v~\zk{zk_ip} datagramu, tzv. \zk{z
 \label{subsec:reflektovane_utoky}
 K~zesílení útoku lze použít \uv{reflektor}. Reflektor je prvek v~síti, který reflektuje provoz
 iniciovaný ze strany útočníka. Při takovém útoku je \uv{spoofována} zaměněna zdrojovoá adresa
-v~\zk{zk_ip} datagramu. Útočník při trojcestném handshakingu (three-way handshake) zasílá na
-reflektor paket s~příznakem SYN se spoofovanou adresou, ten následně odpoví paketem
-s~příznakem SYN/ACK na podvrženou \zk{zk_ip} adresu, tedy adresou oběti. Reflektor tak
-neodesílá odpověď útočníkovi ale oběti. Při dostatečném počtu odeslaných žádostí směrem k~oběti
-dochází k~vyčerpání zdrojů, tedy k~odepření služby. Oběť se tak může domnívat, že na ni útočí
-reflektory. Pravý útočník zůstává skryt. Reflektovaný útok lze označit jako \zkratka{zk_drdos}.
+v~IP datagramu. Útočník při trojcestném handshakingu (three-way handshake) zasílá na reflektor
+paket s~příznakem SYN se spoofovanou adresou, ten následně odpoví paketem s~příznakem SYN/ACK
+na podvrženou IP adresu, tedy adresou oběti. Reflektor tak neodesílá odpověď útočníkovi ale
+oběti. Při dostatečném počtu odeslaných žádostí směrem k~oběti dochází k~vyčerpání zdrojů, tedy
+k~odepření služby. Oběť se tak může domnívat, že na ni útočí reflektory. Pravý útočník zůstává
+skryt. Reflektovaný útok lze označit jako \zkratka{zk_drdos}.
 
 \subsubsection{Amplifikované útoky}
 Jiným typem jsou takzvané \uv{amplifikované} útoky, které využívají \uv{amplifikátoru}.
 \uv{Amplifikátor} amplifikuje, tedy zvětšuje síťový provoz zaslaný útočníkem a zasílá jej na
-spoofovanou \zk{zk_ip} adresu oběti, což tento útok činí silnějším než je přímý útok. Útočník je díky
+spoofovanou IP adresu oběti, což tento útok činí silnějším než je přímý útok. Útočník je díky
 tomuto schopen vygenerovat dostatečný síťový provoz pro zahlcení oběti.
 
 Příkladem takové amplifikace může být například dotaz na DNS server, v~jehož zóně se nachází
-rozsáhlý TXT záznam. Nebo v~případě \zkratka{zk_ntp} serveru si můžeme zažádat
-o~posledních~600
+rozsáhlý TXT záznam. Nebo v~případě \zkratka{zk_ntp} serveru si můžeme zažádat o~posledních~600
 adres, které se k~němu připojily. Následující tabulka \ref{tab:udp_ampl} zobrazuje,
 kolikanásobně je větší odpověď od reflektoru oproti vyslané žádosti směrem k~němu.
 
@@ -134,7 +133,7 @@ není v jeho správě. Vyžadují registraci a za úplatu poskytují stresové t
 možno provádět buď v Bitcoinech nebo přes PayPal. Ceny za tuto službu se pohybují přibližně v
 rozmezí mezi 2-10 americkými dolary. Mnoho takových služeb nabízí i podporu typu 24/7 skrze
 \zkratka{zk_im}. Dostupných bývá povětšinou pár základních útoků založených na protokolech
-\zkratka{zk_tcp}, \zkratka{zk_udp} a \zkratka{zk_http}. Tyto služby využívají také \zk{zk_ip} spoofing
+\zkratka{zk_tcp}, \zkratka{zk_udp} a \zkratka{zk_http}. Tyto služby využívají také IP spoofing
 a zesílení útoku pomocí amplifikátorů \ref{subsec:reflektovane_utoky}. 
 
 Největší hrozbou \zk{zk_ddosaas} útoků je jejich snadná dostupnost. Avšak tyto útoky nejsou
