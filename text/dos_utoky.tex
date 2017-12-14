@@ -132,7 +132,7 @@ Při tomto dělení můžeme rozlišovat záplavové a pomalé.
 
 Pro záplavový, rychlý, útok se používá označení \uv{flood}\footnote{z angličtiny flood - zaplavit} a je pro něj charakteristický velký počet paketů za sekundu (pps), vetší šířka pásma. 
 
-Pomalé útoky jsou protipólem rychlých útoků, jelikož k úspěšnému útoku nepotřebují zahltit většinu nebo celou šířku pásma. Takové útoky bývají ve většině případů spojově orientované a  jeví se jako legitimní síťový provoz a zároveň útočník s obětí navázal spojení. Toto jej činí  těžko detekovatelným a ochranu proti němu nelehkou.
+Pomalé útoky jsou protipólem rychlých útoků, jelikož k úspěšnému útoku nepotřebují zahltit většinu nebo celou šířku pásma. Takové útoky bývají ve většině případů spojově orientované a jeví se jako legitimní síťový provoz a zároveň útočník s obětí navázal spojení. Toto jej činí těžko detekovatelným a ochranu proti němu nelehkou.
 
 \subsection{Podle spoje}
 Při tomto dělení můžeme útoky rozdělit na spojované a nespojované. 
@@ -142,7 +142,7 @@ Nevýhodou a tohoto typu útoku je, že následkem nutnosti navázat legitimní 
 Tento typ útoku nejčastěji ovlivní aplikační zdroje atakovaného serveru.
 Zástupcem tohoto útoku může být např. HTTP GET Flood.
 
-Nespojovaný (connectionless) typ útoku je mnohem snazší, jelikož nepotřebujeme pro něj sestavit spojení.  Tento typ útoků je převážně útokem na šířku pásma a to buď přímo nebo skrze \hyperref[subsec:zesilene_utoky]{prostředníka}, coby reflektoru nebo amplifikátoru, čímž lze na první pohled útočníka anonymizovat. Příkladem tohoto typu útoku jsou UDP, ICMP, DNS flood útoky. Lze také tento typ útoku provést vůči spojovanému protokolu, konkrétně tedy útokem SYN Flood. Jak bylo zmíněno výše, při nespojovaném útoku lze skrýt identitu útočníka díky podvržení IP adresy. Ve výsledku tento útok ovlivňuje serverové zdroje.
+Nespojovaný (connectionless) typ útoku je mnohem snazší, jelikož nepotřebujeme pro něj sestavit spojení. Tento typ útoků je převážně útokem na šířku pásma a to buď přímo nebo skrze \hyperref[subsec:zesilene_utoky]{prostředníka}, coby reflektoru nebo amplifikátoru, čímž lze na první pohled útočníka anonymizovat. Příkladem tohoto typu útoku jsou UDP, ICMP, DNS flood útoky. Lze také tento typ útoku provést vůči spojovanému protokolu, konkrétně tedy útokem SYN Flood. Jak bylo zmíněno výše, při nespojovaném útoku lze skrýt identitu útočníka díky podvržení IP adresy. Ve výsledku tento útok ovlivňuje serverové zdroje.
 
 \section{DDoS jako služba}
 Dnes uživateli běžně přístupné služby v podobě DoS nebo DDoS útoků poskytované
@@ -234,8 +234,8 @@ Využívá protokol UDP a komunikuje na portu 123.
 
 Tento útok se zaměřuje na zneužití příkaz monlist, která vrací seznam IP adres
 posledních 600 klientů připojených k NTP serveru. Primárně tento příkaz slouží k
-monitorování provozu na serveru. Dotaz s kódem žádosti 42 \uv{MON\_GETLIST\_1}  můžeme vidět
-na obr.  \ref{fig:monlist_get_wireshark-img}. Útočník se tedy zaměřuje na získání co
+monitorování provozu na serveru. Dotaz s kódem žádosti 42 \uv{MON\_GETLIST\_1} můžeme vidět
+na obr. \ref{fig:monlist_get_wireshark-img}. Útočník se tedy zaměřuje na získání co
 největší amplifikace, tedy toho, aby odpověď zaslaná na podvrženou IP adresu oběti
 byla několikanásobně větší než dotaz zaslaný ze strany útočníka. NTP server však
 nedokáže identifikovat, zda je či není zdrojová adresa podvržena.
