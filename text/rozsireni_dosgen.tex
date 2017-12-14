@@ -18,27 +18,68 @@ V průběhu vývoje jsem využíval nástroje Wireshark pro sledování síťov�
 %dosgen, trafgen wrapper, libdos, tcpgen, tcpgen?, gui
 Nástroj DoSgen se sestává z více komponent, které ve výsledku tvoří jeden celek. V následujících kapitolách jsou právě tyto popsány.
 
+Samotný dosgen se stará o převzetí vstupních argumentů od uživatele. Implementuje dodatečné funkce pro jejich kontrolu a zabezpečuje formátování pro další použití a jiná opatření.
+
 \subsection{Trafgen}
 Jádrem aplikace DoSgen je program Trafgen, nástroj distribuovaný v rámci sady nástrojů netsniff-ng vyvinutou Danielem Borkmannem. Netsniff-ng je určena pro operační systémy Linux, distribuována je pod licencí GNU General Public License v2.0.
 
 Nástroj trafgen je vysoce výkonný generátor síťového provozu napsaný v jazyce C. Využití najde při ladění sítí, testování jejich výkonnosti. Lze jej použít také pro \textit{fuzz-testing}, tedy techniku, kdy jsou na vstup testovaného programu dodávána náhodná či neočekávaná data.
 
-Vysoké výkonnosti je u trafgenu dosaženo pomocí \textit{zero-copy} mechanizmů, při jehož použití nemusí jádro operačního systému kopírovat každý paket z prostory jádra do uživatelského prostoru a naopak. Velkou výhodou tohoto nástroje je také to, že je možno pro generování paketů využít více jader procesoru.
+Vysoké výkonnosti je u trafgenu dosaženo pomocí \textit{zero-copy} mechanizmů, při jehož použití nemusí jádro operačního systému kopírovat každý paket z prostoru jádra do uživatelského prostoru a naopak. Velkou výhodou tohoto nástroje je také to, že je možno pro generování paketů využít více jader procesoru.
 
 Trafgen umožňuje sestavení paketu prostřednictvím svého nízkoúrovňového jazyka. Proto není limitován žádným protokolem a je možné jej tedy použít jakkoli. K tomuto nástroji lze přistupovat skrze příkazový řádek, kde je možno specifikovat potřebné parametry a cestu ke konfiguračnímu souboru datového paketu.
 
+V této práci je implementovaný trafgen z netsniff-ng ve verzi 0.6.1. Aktuální verze je 0.6.3.
 
+\subsection{LibDoS}
+Knihovna LibDoS, kterou DoSgen využívá, sdružuje knihovnu vytvořenou z nástroje trafgen spolu s rozhraním \texttt{Trafgen wrapper}.
 
+\subsection{Trafgen wrapper}
+Hlavním úkolem modulu \texttt{Trafgen wrapper} je shromáždění potřebných parametrů pro jejich předání nástroji trafgen, ve výsledku tedy úspěšné spuštění útoku. Trafgen na vstupu očekává soubor s konfigurací paketu. Ten je taktéž vytvořen tímto modulem, který jej sestaví ze souboru \texttt{trafgen\_configs.h}, v němž se nachází pro každý útok šablony, do kterých se doplní informace získané od uživatele.
 
-%\section{Konfigurační jazyk nástroje Trafgen}
+%TODO \section{Konfigurační jazyk nástroje Trafgen}
 %přemístit k popisu trafgenu?
-
-\section{Implementace útoků}
-%konkrétně každý útok
-
 
 \section{Instalace nástroje}
 %docker
+V této kapitole bude popsána instalace nástroje DoSgen na operačním systému Fedora. Jsou zde zmíněny knihovny, jež je třeba instalovat pro jeho plnou funkčnost. 
+
+\noindent Instalace následujících knihoven je nutností, jelikož jsou přímými závislostmi nástroje trafgen.
+\begin{lstlisting}
+dnf -y install flex bison libnl3-devel libssh-devel
+\end{lstlisting}
+
+\noindent Dále je třeba nainstalovat nástroje potřebné ke kompilaci kódu nástroje.
+\begin{lstlisting}
+dnf -y install make pkg-config gcc-c++
+\end{lstlisting}
+
+\noindent Instalace následujících balíčků je pouze volitelné, jde o užitečné nástroje, které najdou své místo vedle nástroje DoSgen.
+\begin{lstlisting}
+dnf -y install tcptrack nmap httping john iftop nload iputils net-tools
+\end{lstlisting}
+
+\noindent Dále je potřeba přeložit zdrojový kód. Provedeme příkazem make:
+\begin{lstlisting}
+cd dosgen/dosgen
+make
+\end{lstlisting}
+
+V rámci této práce byl vytvořen také Dockerfile, pomocí kterého lze sestavit kontejner s nainstalovaným nástrojem DoSgen. Výhoda tohoto kontejneru spočívá v tom, že procesy spuštěné v kontejneru jsou oddělené od procesů v hostitelské stanici. Tento kontejner staví na operačním systému Fedora ve verzi 27. Sestavení kontejneru a jeho spuštění lze docílit následovně.
+\begin{lstlisting}
+docker build -t <NÁZEV_KONTEJNERU> .
+docker run <NÁZEV_KONTEJNERU>
+\end{lstlisting}
+
+\section{Implementace útoků}
+Původní struktura nástroje zůstala stejná, stávající moduly byly upraveny pro funkčnost mnou implementovaných útoků.
+
+\subsection{NTP Flood}
+
+Prerekvizitou tohoto útoku je 600 klientů, zapsaných v databázi NTP serveru. Toto nelze nasimulovat z jedné uživatelské stanice běžným způsobem. Proto jsem přistoupil k tvorbě nástroje v jazyce Python, pomocí kterého si nasimuluji množství klientů požadujících po NTP serveru aktualizaci času. Tento skript využívá knihoven \texttt{scapy} pro sestavení paketu a \texttt{faker} pro generování náhodné IP adresy.
+
+Dalším krokem bylo umístění konfigurace paketu do souboru \texttt{trafgen\_configs.h}. Do této konfigurace si následně DoSgen doplní zdrojovou a cílovou adresu IP. 
+V dalším kroku byl do souboru \texttt{dosgen.c} doplněn nový přepínač pro tento útok. Při jeho použití je zavolána funkce \texttt{ntp\_flood} z modulu \texttt{argsParse.c}, která zajišťuje validaci vstupních parametrů. Při kladném výsledku validace je zavolána funkce \texttt{prepare\_ntp}, která upravuje konfigurační soubor. Následně je zavolán samotný trafgen a útok je spuštěn.
 
 
 \section{Použití nástroje}
