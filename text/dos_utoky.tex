@@ -66,6 +66,7 @@ podpořeno možností měnit zdrojovou adresu v~IP datagramu, tzv. IP spoofing.
 %TODO:zde vlozit obrazek ddos utoku
 
 \subsection{Zesílené útoky}
+\label{subsec:zesilene_utoky}
 \subsubsection{Reflektované útoky}
 \label{subsec:reflektovane_utoky}
 K~zesílení útoku lze použít \uv{reflektor}. Reflektor je prvek v~síti, který reflektuje provoz
@@ -112,19 +113,36 @@ kolikanásobně je větší odpověď od reflektoru oproti vyslané žádosti sm
 Pro větší účinek těchto zesílených útoků lze využít namísto DoS útoku útok DDoS.
 
 \section{Dělení útoků}
-%Útoky lze také specifikovat a rozdělit podle TCP/IP vrstev, skrze které působí.
+V následujících podkapitolách bude představeno dělení útoků. A to konkrétně podle počtu útočících zařízení, typu spojení, rychlosti a spotřeby zdrojů. Každý DoS útok lze zařadit do jedné nebo více z nich.
+Útoky lze také specifikovat a rozdělit podle TCP/IP vrstev, skrze které působí.
+
 \subsection{Podle počtu útočících zařízení}
+Útoky můžeme dělit podle toho, kolik zařízení se podílí na útoku samotném. Pokud mluvíme o DoS útoku, myslíme tím útok z jedné stanice, povětšinou útočníkův počítač, ze kterého se snaží o odepření služby.
+Druhým typem útoku je DDoS, který je vykonáván z více míst a cílen na jednu nebo více obětí.
+Tato problematika je rozebrána v kapitole \ref{subs_ddos}.
+
 
 \subsection{Podle spotřeby zdrojů}
+Útoky, které mají za cíl vyčerpání určitého typu omezeného zdroje můžeme rozdělit na útoky spotřebovávající síťové, serverové nebo aplikační zdroje.
+Podrobnější popis útoků na síťové zdroje je popsán v kapitole \ref{sec:utoky_na_sitove_zdroje} a útoky na aplikační v kapitole \ref{sec:utoky_na_aplikacni_zdroje}.
+
 
 \subsection{Podle rychlosti}
-zaplavove a pomale
-rychle oznaceni "flood" velky pocet paketu za sek, vetsi sirka pasma
-pomale se jevi byti legitimni, nezabiraji velkou sirku pasma
+Při tomto dělení můžeme rozlišovat záplavové a pomalé. 
+
+Pro záplavový, rychlý, útok se používá označení \uv{flood}\footnote{z angličtiny flood - zaplavit} a je pro něj charakteristický velký počet paketů za sekundu (pps), vetší šířka pásma. 
+
+Pomalé útoky jsou protipólem rychlých útoků, jelikož k úspěšnému útoku nepotřebují zahltit většinu nebo celou šířku pásma. Takové útoky bývají ve většině případů spojově orientované a  jeví se jako legitimní síťový provoz a zároveň útočník s obětí navázal spojení. Toto jej činí  těžko detekovatelným a ochranu proti němu nelehkou.
 
 \subsection{Podle spoje}
-Při tomto dělení můžeme útoky rozdělit na spojované a nespojované.
-%spojované(ovlivni aplikace) a nespojované connectionless(ovlivni vetsinou serverove zdroje) a connection-oriented
+Při tomto dělení můžeme útoky rozdělit na spojované a nespojované. 
+
+Při útoku spojovaném (connection-oriented) je nejdříve nutno ustanovit spojení. Tedy, útok lze provést tehdy, jsme-li úspěšně připojeni k oběti. Spojované útoky pracují především nad protokolem TCP, jež je spojově orientovaný. %TODO udělat jako podkapitolu a odsazení
+Nevýhodou a tohoto typu útoku je, že následkem nutnosti navázat legitimní spojení s obětí a tudíž oběti je známa identita útočníka. Tomuto se dá zabránit použitím proxy serveru jako prostředníka mezi útočníkem a obětí. Nemálo se v případě tohoto typu útoku také využívá botnetů řízených útočníkem v rámci C\&C infrastruktury.
+Tento typ útoku nejčastěji ovlivní aplikační zdroje atakovaného serveru.
+Zástupcem tohoto útoku může být např. HTTP GET Flood.
+
+Nespojovaný (connectionless) typ útoku je mnohem snazší, jelikož nepotřebujeme pro něj sestavit spojení.  Tento typ útoků je převážně útokem na šířku pásma a to buď přímo nebo skrze \hyperref[subsec:zesilene_utoky]{prostředníka}, coby reflektoru nebo amplifikátoru, čímž lze na první pohled útočníka anonymizovat. Příkladem tohoto typu útoku jsou UDP, ICMP, DNS flood útoky. Lze také tento typ útoku provést vůči spojovanému protokolu, konkrétně tedy útokem SYN Flood. Jak bylo zmíněno výše, při nespojovaném útoku lze skrýt identitu útočníka díky podvržení IP adresy. Ve výsledku tento útok ovlivňuje serverové zdroje.
 
 \section{DDoS jako služba}
 Dnes uživateli běžně přístupné služby v podobě DoS nebo DDoS útoků poskytované
@@ -145,6 +163,7 @@ nikterak sofistikované a nejsou příliš velkou hrozbou pro standardně zabezp
 \cite{DDoSaaS}.
 
 \section{Útoky mířené na síťové zdroje}
+\label{sec:utoky_na_sitove_zdroje}
 Cílem tohoto útoku je zaplavit celou síť množstvím paketů tak, aby byla spotřebována většina
 šířky pásma konkrétní sítě. Při těchto útocích je obvyklé použití botnetu při jeho samotném
 vykonávání.
@@ -170,6 +189,7 @@ Záplavové útoky jsou efektivnější v případě použití botnetu, tudíž 
 % jak funguje normalne, slabina v tcp/ip, pomale utoky
 
 \section{Útoky mířené na aplikační zdroje}
+\label{sec:utoky_na_aplikacni_zdroje}
 Tyto typy útoků se zaměřují na zranitelnosti samotné aplikace využívající protokoly 
 7. vrstvy ISO/OSI modelu. Využívají zranitelností v implementaci samotného aplikačního
 protokolu nebo aplikace běžící na cílovém serveru. Tato zranitelnost nemusí nutně býti
@@ -179,7 +199,7 @@ server spotřebuje velké množství výpočetních zdrojů. Je-li takovýchto p
 server vysláno více, dochází na jeho straně k vyčerpání výpočetních zdrojů, nelze zpracovat
 požadavky legitimních uživatelů, čímž dochází k odepření služby a tedy k úspěšnému DoS útoku.
 
-Tyto útoky využívají nejen záplavovou \ref{subs_zaplavove} techniku, ale i pomalou, kterou je
+Tyto útoky využívají nejen \hyperref[subs_zaplavove]{záplavovou} techniku, ale i pomalou, kterou je
 kupříkladu Slowloris.
  
 Příkladem takových útoků může být HTTP GET Flood, který je prováděn povětšinou botnetem, kdy
@@ -202,7 +222,7 @@ Do této kategorie útoků lze zařadit taky útoky na protokoly DNS, SMTP, SNMP
 %slow read?
 
 \section{Implementované útoky}
-V této kapitole jsou rozebrány útoky, které byly implementovány do aplikace DoSGen.
+V této kapitole jsou rozebrány útoky, které byly implementovány do aplikace DoSGen a následně otestovány.
 
 \subsection{NTP flood}
 %http://www.ntp.org/documentation.html
@@ -245,7 +265,8 @@ server nám vrací 600 záznamů nepočítaje první dva řádky výpisu.
 
 
 %ntpdc výstup, ukázka počtu záznamů
-\lstinputlisting[language=bash]{code/ntpdc_monlist.sh}
+%\lstinputlisting[language=bash]{code/ntpdc_monlist.sh}
+%TODO přidat screenshot namisto listingu
 
 Nejjednodušší ochranou proti tomuto útoku je aktualizace NTP serveru na verzi 4.2.7p26, kde
 je příkaz \texttt{monlist} zcela odstraněn. Chceme-li zůstat na aktuální verzi NTP serveru,
