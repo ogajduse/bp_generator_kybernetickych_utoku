@@ -35,7 +35,7 @@ jednoznačně predikovat cíl jeho útoku.
 DoS útoky mohou být prováděny z~jednoho místa, což je méně časté, jelikož při
 DoS útoku není útočník z~důvodu malé šířky pásma schopen vygenerovat dostatečný síťový
 provoz na to, aby způsobil odepření služby na cíli svého útoku. Lze tedy jeho účinek znásobit a
-to použitím většího počtu útočících stanic. Takový útok nazýváme \zkratka{zk_ddos}. V~případě
+to použitím většího počtu útočících stanic. Takový útok nazýváme Distributed Denial of Service (DDoS). V~případě
 DoS útoku není útočník mnohdy schopen vygenerovat dostatečný síťový provoz na to, aby
 způsobil odepření služby na cíli svého útoku.
 
@@ -49,8 +49,8 @@ Zajímavým cílem útočníků jsou zařízení IoT, které útočník může n
 
 Takové stanice nazýváme \uv{boti} a seskupení více těchto stanic \uv{botnety}. Důvody pro
 vytvoření botnetu jsou větší šířka pásma, šíření spamu nebo redistribuce malware nejen do sítě,
-kde se \uv{bot} nachází. Tito \uv{boti} jsou zapojeni do \zkratka{zk_cnc} infrastruktury spolu
-s~\zkratka{zk_irc} servery skrze které může útočník rozesílat instrukce botům. %TODO:zdroj
+kde se \uv{bot} nachází. Tito \uv{boti} jsou zapojeni do Command and Control (C\&C) infrastruktury spolu
+s~Internet Relay Chat (IRC) servery skrze které může útočník rozesílat instrukce botům. %TODO:zdroj
 IRC servery poskytují centralizovanou správu botů nebo celých botnetů skrze C\&C
 mechanizmy. Jedním z mnoha trojských koní je Linux.Kaiten. Jedná se o klienta ovládaného skrze
 IRC server, který může stahovat a spouštět soubory, provádět DDoS útoky za
@@ -75,7 +75,7 @@ paket s~příznakem SYN se spoofovanou adresou, ten následně odpoví paketem s
 na podvrženou IP adresu, tedy adresou oběti. Reflektor tak neodesílá odpověď útočníkovi ale
 oběti. Při dostatečném počtu odeslaných žádostí směrem k~oběti dochází k~vyčerpání zdrojů, tedy
 k~odepření služby. Oběť se tak může domnívat, že na ni útočí reflektory. Pravý útočník zůstává
-skryt. Reflektovaný útok lze označit jako \zkratka{zk_drdos}.
+skryt. Reflektovaný útok lze označit jako Distributed Reflection Denial of Service (DRDoS).
 
 \subsubsection{Amplifikované útoky}
 Jiným typem jsou takzvané \uv{amplifikované} útoky, které využívají \uv{amplifikátoru}.
@@ -84,7 +84,7 @@ spoofovanou IP adresu oběti, což tento útok činí silnějším než je pří
 tomuto schopen vygenerovat dostatečný síťový provoz pro zahlcení oběti.
 
 Příkladem takové amplifikace může být například dotaz na DNS server, v~jehož zóně se nachází
-rozsáhlý TXT záznam. Nebo v~případě \zkratka{zk_ntp} serveru si můžeme zažádat o~posledních~600
+rozsáhlý TXT záznam. Nebo v~případě Network Time Protocol (NTP) serveru si můžeme zažádat o~posledních~600
 adres, které se k~němu připojily. Následující tabulka \ref{tab:udp_ampl} zobrazuje,
 kolikanásobně je větší odpověď od reflektoru oproti vyslané žádosti směrem k~němu.
 
@@ -132,8 +132,8 @@ způsobené objednateli. Přičemž ani nezjišťují, zda cíl útoku, který s
 není v jeho správě. Vyžadují registraci a za úplatu poskytují stresové testování. Platbu je
 možno provádět buď v Bitcoinech nebo přes PayPal. Ceny za tuto službu se pohybují přibližně v
 rozmezí mezi 2-10 americkými dolary. Mnoho takových služeb nabízí i podporu typu 24/7 skrze
-\zkratka{zk_im}. Dostupných bývá povětšinou pár základních útoků založených na protokolech
-\zkratka{zk_tcp}, \zkratka{zk_udp} a \zkratka{zk_http}. Tyto služby využívají také IP spoofing
+Instant messaging (IM). Dostupných bývá povětšinou pár základních útoků založených na protokolech
+Transmission Control Protocol (TCP), User Datagram Protocol (UDP) a Hypertext Transfer Protocol (HTTP). Tyto služby využívají také IP spoofing
 a zesílení útoku pomocí amplifikátorů \ref{subsec:reflektovane_utoky}. 
 
 Největší hrozbou DDoSaaS útoků je jejich snadná dostupnost. Avšak tyto útoky nejsou
