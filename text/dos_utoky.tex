@@ -1,15 +1,15 @@
 % !TeX spellcheck = cs_CZ
 \chapter[DoS útoky]{DoS útoky}
-V~této kapitole budou rozebrány \zk{zk_dos} útoky, jejich princip, charakteristika a následně
-dělení. Dále tato kapitola zmiňuje využití \zk{zk_ddos} útoků jako služby. V~závěru jsou
+V~této kapitole budou rozebrány DoS útoky, jejich princip, charakteristika a následně
+dělení. Dále tato kapitola zmiňuje využití DDoS útoků jako služby. V~závěru jsou
 zmíněny implementované útoky.
 
 \section{Charakteristika}
-\zk{zk_dos} lze charakterizovat jako kybernetický útok, který si klade za cíl znepřístupnění
+DoS lze charakterizovat jako kybernetický útok, který si klade za cíl znepřístupnění
  cílové služby legitimním uživatelům. Využívají jedné nebo více zranitelností v~implementaci
  konkrétního software. Ve své podstatě každá stanice se může stát cílem, obětí, útoku
- \zk{zk_dos}. \zk{zk_dos} útoky se mezi útočníky velmi rychle staly populárními a tento trend
- se nemění \cite{akamai_q2_2017}. Realizace \zk{zk_dos} útoku není nikterak obtížná a
+ DoS. DoS útoky se mezi útočníky velmi rychle staly populárními a tento trend
+ se nemění \cite{akamai_q2_2017}. Realizace DoS útoku není nikterak obtížná a
  nevyžaduje z~útočníkovy strany hluboké znalosti, jelikož nástroje k~jejich provedení jsou
  běžně dostupné. %, viz. kapitola \ref{chap:nastroje_pro_dos}.
  Fakt, že narušit činnost sítě bývá
@@ -32,28 +32,28 @@ jednoznačně predikovat cíl jeho útoku.
 \section{Typy útoků}
 \subsection{Útok z~jednoho zdroje a útok distribuovaný}
 \label{subs_ddos}
-\zk{zk_dos} útoky mohou být prováděny z~jednoho místa, což je méně časté, jelikož při
-\zk{zk_dos} útoku není útočník z~důvodu malé šířky pásma schopen vygenerovat dostatečný síťový
+DoS útoky mohou být prováděny z~jednoho místa, což je méně časté, jelikož při
+DoS útoku není útočník z~důvodu malé šířky pásma schopen vygenerovat dostatečný síťový
 provoz na to, aby způsobil odepření služby na cíli svého útoku. Lze tedy jeho účinek znásobit a
 to použitím většího počtu útočících stanic. Takový útok nazýváme \zkratka{zk_ddos}. V~případě
-\zk{zk_dos} útoku není útočník mnohdy schopen vygenerovat dostatečný síťový provoz na to, aby
+DoS útoku není útočník mnohdy schopen vygenerovat dostatečný síťový provoz na to, aby
 způsobil odepření služby na cíli svého útoku.
 
-Pro distribuovaný \zk{zk_dos} útok je charakteristický velmi vysoký počet uživatelských stanic,
+Pro distribuovaný DoS útok je charakteristický velmi vysoký počet uživatelských stanic,
 či serverů, použitých k~realizaci tohoto útoku. Pohybujeme se v~řádech desítek, stovek až
 milionů počítačů. 
 Často jsou tyto počítače napadeny virem, trojským koněm nebo programem, který v~sobě ukrývá
-skrytou funkci a následně jsou zneužitý k~účelům \zk{zk_dos} útoku bez vědomí jejich majitele.
-Zajímavým cílem útočníků jsou zařízení IoT, které útočník může následně využít k~\zk{zk_dos}
+skrytou funkci a následně jsou zneužitý k~účelům DoS útoku bez vědomí jejich majitele.
+Zajímavým cílem útočníků jsou zařízení IoT, které útočník může následně využít k~DoS
 útoku.
 
 Takové stanice nazýváme \uv{boti} a seskupení více těchto stanic \uv{botnety}. Důvody pro
 vytvoření botnetu jsou větší šířka pásma, šíření spamu nebo redistribuce malware nejen do sítě,
 kde se \uv{bot} nachází. Tito \uv{boti} jsou zapojeni do \zkratka{zk_cnc} infrastruktury spolu
 s~\zkratka{zk_irc} servery skrze které může útočník rozesílat instrukce botům. %TODO:zdroj
-\zk{zk_irc} servery poskytují centralizovanou správu botů nebo celých botnetů skrze \zk{zk_cnc}
+IRC servery poskytují centralizovanou správu botů nebo celých botnetů skrze C\&C
 mechanizmy. Jedním z mnoha trojských koní je Linux.Kaiten. Jedná se o klienta ovládaného skrze
-\zk{zk_irc} server, který může stahovat a spouštět soubory, provádět \zk{zk_ddos} útoky za
+IRC server, který může stahovat a spouštět soubory, provádět DDoS útoky za
 použití UDP Flood a SYN Flood útoků a také umožňuje spoofing IP adresy.
 
 Útoky vedené skrze tyto botnety dokáží plně zahltit šířku pásma oběti a způsobí tak odepření
@@ -109,7 +109,7 @@ kolikanásobně je větší odpověď od reflektoru oproti vyslané žádosti sm
 	\end{tabular}
 \end{table}
 
-Pro větší účinek těchto zesílených útoků lze využít namísto \zk{zk_dos} útoku útok \zk{zk_ddos}.
+Pro větší účinek těchto zesílených útoků lze využít namísto DoS útoku útok DDoS.
 
 \section{Dělení útoků}
 %Útoky lze také specifikovat a rozdělit podle TCP/IP vrstev, skrze které působí.
@@ -123,8 +123,8 @@ Pro větší účinek těchto zesílených útoků lze využít namísto \zk{zk_
 %spojované a nespojované
 
 \section{DDoS jako služba}
-Dnes uživateli běžně přístupné služby v podobě \zk{zk_dos} nebo \zk{zk_ddos} útoků poskytované
-konkrétními službami lze nazvat \zkratka{zk_ddosaas}.
+Dnes uživateli běžně přístupné služby v podobě DoS nebo DDoS útoků poskytované
+konkrétními službami lze nazvat Denial of Service as Service (DDoSaaS).
 
 Definuji sebe sama jako službu stresového testování přičemž po objednateli této služby není
 vyžadována znalost datových sítí. Ve smluvních podmínkách se zříkají odpovědnosti za škody
@@ -136,7 +136,7 @@ rozmezí mezi 2-10 americkými dolary. Mnoho takových služeb nabízí i podpor
 \zkratka{zk_tcp}, \zkratka{zk_udp} a \zkratka{zk_http}. Tyto služby využívají také IP spoofing
 a zesílení útoku pomocí amplifikátorů \ref{subsec:reflektovane_utoky}. 
 
-Největší hrozbou \zk{zk_ddosaas} útoků je jejich snadná dostupnost. Avšak tyto útoky nejsou
+Největší hrozbou DDoSaaS útoků je jejich snadná dostupnost. Avšak tyto útoky nejsou
 nikterak sofistikované a nejsou příliš velkou hrozbou pro standardně zabezpečenou síť
 \cite{DDoSaaS}.
 
@@ -153,14 +153,14 @@ nevyžaduje sestavení spojení, tzv. třícestný handshaking, to útočníkovi
 IP adresy. Při záplavovém útoku útočník zasílá velké množství UDP paketů a volí náhodné
 cílové porty a také IP adresy. Server, oběť, je tak nucen odpovídat na každou takovou
 přijatou zprávu odpovídat zprávou ICMP (Destination unreachable - \uv{Cíl nedosažitelný}),
-čímž spotřebuje velkou šířku pásma a dochází tak k \zk{zk_dos} útoku.
+čímž spotřebuje velkou šířku pásma a dochází tak k DoS útoku.
 
 %TODO obrázek UDP floodu
 
 Podobným útokem je ICMP Flood, při němž útočník posílá oběti zprávu \uv{Echo request} a oběť
 na každou takovou musí odpovídat zprávou \uv{Echo reply}, spotřebovává tak velkou šířku
-pásma a dochází k \zk{zk_dos} útoku.
-Záplavové útoky jsou efektivnější v případě použití botnetu, tudíž \zk{zk_ddos} útoku.
+pásma a dochází k DoS útoku.
+Záplavové útoky jsou efektivnější v případě použití botnetu, tudíž DDoS útoku.
 
 %TODO \section{Útoky mířené na serverové zdroje}
 % jak funguje normalne, slabina v tcp/ip, pomale utoky
@@ -191,7 +191,7 @@ velikost okna.
 Takových spojení vytvoří co nejvíce a snaží se je udržet otevřená po co nejdelší dobu.
 Server pak útočníkem požadovaná data rozdělí do většího poctu menších častí v závislosti na
 velikosti okna. V případě více takových spojení je server zaneprázdněn po dlouhou dobu a
-další navázání dalších spojení odmítá, čímž se stává nedostupným a dochází tedy k \zk{zk_dos}
+další navázání dalších spojení odmítá, čímž se stává nedostupným a dochází tedy k DoS
 útoku.
 
 Do této kategorie útoků lze zařadit taky útoky na protokoly DNS, SMTP, SNMP a další.
@@ -204,18 +204,18 @@ V této kapitole jsou rozebrány útoky, které byly implementovány do aplikace
 %http://www.ntp.org/documentation.html
 %https://www.csirt.cz/page/2793/prevence-zneuziti-ntp-k-ntp-amplification-utokum/
 %TODO schéma útoku
-Protokol aplikační vrstvy, \zk{zk_ntp} slouží k synchronizaci času mezi stanicemi v síti.
+Protokol aplikační vrstvy, NTP slouží k synchronizaci času mezi stanicemi v síti.
 Využívá protokol UDP a komunikuje na portu 123.
 
-Tento útok se zaměřuje na zneužití příkaz monlist, která vrací seznam \zk{zk_ip} adres
-posledních 600 klientů připojených k \zk{zk_ntp} serveru. Primárně tento příkaz slouží k
+Tento útok se zaměřuje na zneužití příkaz monlist, která vrací seznam IP adres
+posledních 600 klientů připojených k NTP serveru. Primárně tento příkaz slouží k
 monitorování provozu na serveru. Dotaz s kódem žádosti 42 \uv{MON\_GETLIST\_1}  můžeme vidět
 na obr.  \ref{fig:monlist_get_wireshark-img}. Útočník se tedy zaměřuje na získání co
-největší amplifikace, tedy toho, aby odpověď zaslaná na podvrženou \zk{zk_ip} adresu oběti
-byla několikanásobně větší než dotaz zaslaný ze strany útočníka. \zk{zk_ntp} server však
+největší amplifikace, tedy toho, aby odpověď zaslaná na podvrženou IP adresu oběti
+byla několikanásobně větší než dotaz zaslaný ze strany útočníka. NTP server však
 nedokáže identifikovat, zda je či není zdrojová adresa podvržena.
 Tento útok lze kategorizovat jako amplifikační útok, kde amplifikací je právě odpověď
-\zk{zk_ntp} serveru, kterou provádí funkce monlist.
+NTP serveru, kterou provádí funkce monlist.
 
 %obrazek-screen wireshark
 \begin{figure} [ht]
@@ -225,9 +225,9 @@ Tento útok lze kategorizovat jako amplifikační útok, kde amplifikací je pr�
 	\label{fig:monlist_get_wireshark-img}
 \end{figure}
 
-Útočníci si průběžně mapují \zk{zk_ntp} servery, které lze takto zneužít a použijí je k 
+Útočníci si průběžně mapují NTP servery, které lze takto zneužít a použijí je k 
 DDoS útoku.
-Oběť je tak zahlcena provozem ze všech těchto \zk{zk_ntp} serverů a nezbývá dostatek šířky
+Oběť je tak zahlcena provozem ze všech těchto NTP serverů a nezbývá dostatek šířky
 pásma pro komunikaci s legitimními uživateli (klienty), pro které se tak služba běžící na
 serveru, který se stal obětí, stane nedostupnou. Dochází tedy k odepření služby a úspěšnému
 DDoS útoku.
@@ -243,13 +243,13 @@ server nám vrací 600 záznamů nepočítaje první dva řádky výpisu.
 %ntpdc výstup, ukázka počtu záznamů
 \lstinputlisting[language=bash]{code/ntpdc_monlist.sh}
 
-Nejjednodušší ochranou proti tomuto útoku je aktualizace \zk{zk_ntp} serveru na verzi 4.2.7p26, kde
-je příkaz \texttt{monlist} zcela odstraněn. Chceme-li zůstat na aktuální verzi \zk{zk_ntp} serveru,
+Nejjednodušší ochranou proti tomuto útoku je aktualizace NTP serveru na verzi 4.2.7p26, kde
+je příkaz \texttt{monlist} zcela odstraněn. Chceme-li zůstat na aktuální verzi NTP serveru,
 je nutno změnit konfiguraci v souboru \texttt{/etc/ntp.conf}, a to přidáním direktivy
 \texttt{noquery} do řádku začínajícího slovy \uv{\texttt{restrict default}} a následně přidáním
 \texttt{disable monitor} na nový řádek konfiguračního souboru. 
 Celá tato zranitelnost byla popsána v CVE-2013-5211. %TODO citovat CVE
 
-Balíček \zk{zk_ntp} serveru pro některé distribuce již v prvotní čisté instalaci obsahuje korektně
+Balíček NTP serveru pro některé distribuce již v prvotní čisté instalaci obsahuje korektně
 nastavený konfigurační soubor. Například v systémech RHEL a Fedora byla tato direktiva
-přítomna dlouho před vydáním tohoto \zk{zk_cve}. %TODO citovat specfile nebo bugzillu?
+přítomna dlouho před vydáním tohoto CVE. %TODO citovat specfile nebo bugzillu?
