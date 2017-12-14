@@ -1,12 +1,44 @@
+% !TeX spellcheck = cs_CZ
 \chapter{Rozšíření nástroje DoSgen}
+Úkolem tohoto semestrálního projektu bylo rozšíření software generující kybernetické útoky. Tato aplikace nese název DoSgen a je napsána v jazyce C. Původním autorem této aplikace je Peter Halaška, který ji vytvořil v rámci své diplomové práce. Tento nástroj byl rozšířen Filipem Grégrem, také coby diplomová práce. Tento autor své útoky z důvodu neproveditelnosti v rámci původní struktury implementoval v jazyce C++.
+
+Pro implementaci v rámci své práce jsem si zvolil následující útoky:
+\begin{itemize}
+	\item{NTP Flood}
+	\item{SMTP Flood}
+	\item{SNMP Flood}
+\end{itemize}
+
+Teoretický popis těchto útoků je uveden v kapitole \ref{sec:implementovane_utoky}. V první fázi bylo na místě zvážení, zda-li je možno využít knihovny \texttt{LibDoS} při implementaci vlastních útoků. Povaha této knihovny nebrání implementaci mnou vybraných útoků.
+
+V průběhu vývoje jsem využíval nástroje Wireshark pro sledování síťového provozu mezi útočníkem a obětí. Všechny útoky byly testovány na běžné uživatelské stanici s operačním systémem Linux, konkrétně Fedora 27. Tato stanice sloužila pouze jako generátor útoků. Stanice vystupující při útoku jako \uv{reflektor} nebo \uv{amplifikátor} a \uv{oběť} jsou plně virtualizované operační systémy skrze hypervizor kernelu (KVM) přistupující ke stejnému síťovému rozhraní \texttt{vnet0}, na něž je připojena i hostitelská stanice. Toto rozhraní je od internetu odděleno prostřednictvím NAT. Pro snazší správu virtualizovaných stanic bylo použito aplikace Virtual Machine Manager ve verzi 1.4.3.
+
 
 \section{Struktura nástroje}
 %dosgen, trafgen wrapper, libdos, tcpgen, tcpgen?, gui
+Nástroj DoSgen se sestává z více komponent, které ve výsledku tvoří jeden celek. V následujících kapitolách jsou právě tyto popsány.
 
-\section{Konfigurační jazyk nástroje Trafgen}
+\subsection{Trafgen}
+Jádrem aplikace DoSgen je program Trafgen, nástroj distribuovaný v rámci sady nástrojů netsniff-ng vyvinutou Danielem Borkmannem. Netsniff-ng je určena pro operační systémy Linux, distribuována je pod licencí GNU General Public License v2.0.
+
+Nástroj trafgen je vysoce výkonný generátor síťového provozu napsaný v jazyce C. Využití najde při ladění sítí, testování jejich výkonnosti. Lze jej použít také pro \textit{fuzz-testing}, tedy techniku, kdy jsou na vstup testovaného programu dodávána náhodná či neočekávaná data.
+
+Vysoké výkonnosti je u trafgenu dosaženo pomocí \textit{zero-copy} mechanizmů, při jehož použití nemusí jádro operačního systému kopírovat každý paket z prostory jádra do uživatelského prostoru a naopak. Velkou výhodou tohoto nástroje je také to, že je možno pro generování paketů využít více jader procesoru.
+
+Trafgen umožňuje sestavení paketu prostřednictvím svého nízkoúrovňového jazyka. Proto není limitován žádným protokolem a je možné jej tedy použít jakkoli. K tomuto nástroji lze přistupovat skrze příkazový řádek, kde je možno specifikovat potřebné parametry a cestu ke konfiguračnímu souboru datového paketu.
+
+
+
+
+%\section{Konfigurační jazyk nástroje Trafgen}
 %přemístit k popisu trafgenu?
 
 \section{Implementace útoků}
 %konkrétně každý útok
+
+
+\section{Instalace nástroje}
+%docker
+
 
 \section{Použití nástroje}
