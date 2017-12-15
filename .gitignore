@@ -1,7 +1,7 @@
 ## FEEC thesis specific
-beamercolorthemeVUT.sty
-beamerthemeVUT.sty
-thesis.sty
+#beamercolorthemeVUT.sty
+#beamerthemeVUT.sty
+#thesis.sty
 
 ## Mine thesis specific
 sablona-prace.pdf
