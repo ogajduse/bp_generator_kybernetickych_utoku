@@ -1,5 +1,5 @@
 % !TeX spellcheck = cs_CZ
-\chapter[DoS útoky]{DoS útoky}
+\chapter[DoS útoky]{Kybernetické útoky}
 V~této kapitole budou rozebrány DoS útoky, jejich princip, charakteristika a následně
 dělení. Dále tato kapitola zmiňuje využití DDoS útoků jako služby. V~závěru jsou
 zmíněny implementované útoky.
@@ -176,9 +176,15 @@ nevyžaduje sestavení spojení, tzv. třícestný handshaking, to útočníkovi
 IP adresy. Při záplavovém útoku útočník zasílá velké množství UDP paketů a volí náhodné
 cílové porty a také IP adresy. Server, oběť, je tak nucen odpovídat na každou takovou
 přijatou zprávu odpovídat zprávou ICMP (Destination unreachable - \uv{Cíl nedosažitelný}),
-čímž spotřebuje velkou šířku pásma a dochází tak k DoS útoku.
+čímž spotřebuje velkou šířku pásma a dochází tak k DoS útoku. Schéma tohoto útoku je znázorněn na obrázku \ref{fig:udp_flood_schema-img}.
 
 %TODO obrázek UDP floodu
+\begin{figure} [ht]
+	\centering
+	\includegraphics[width=0.9\textwidth]{obrazky/udp_flood_schema.png} %.pdf
+	\caption{Schéma UDP Flood útoku}
+	\label{fig:udp_flood_schema-img}
+\end{figure}
 
 Podobným útokem je ICMP Flood, při němž útočník posílá oběti zprávu \uv{Echo request} a oběť
 na každou takovou musí odpovídat zprávou \uv{Echo reply}, spotřebovává tak velkou šířku
@@ -231,7 +237,14 @@ V této kapitole jsou rozebrány útoky, které byly implementovány do aplikace
 %https://www.csirt.cz/page/2793/prevence-zneuziti-ntp-k-ntp-amplification-utokum/
 %TODO schéma útoku
 Protokol aplikační vrstvy, NTP slouží k synchronizaci času mezi stanicemi v síti.
-Využívá protokol UDP a komunikuje na portu 123.
+Využívá protokol UDP a komunikuje na portu 123. Schéma tohoto útoku je na obr. \ref{fig:ntp_schema-img}.
+
+\begin{figure} [ht]
+	\centering
+	\includegraphics[width=0.9\textwidth]{obrazky/ntp_flood_schema.png} %.pdf
+	\caption{Schéma NTP útoku}
+	\label{fig:ntp_schema-img}
+\end{figure}
 
 Tento útok se zaměřuje na zneužití příkaz monlist, která vrací seznam IP adres
 posledních 600 klientů připojených k NTP serveru. Primárně tento příkaz slouží k
