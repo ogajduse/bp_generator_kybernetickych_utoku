@@ -1,3 +1,4 @@
+% !TeX spellcheck = cs_CZ
 % Soubory musí být v kódování, které je nastaveno v příkazu \usepackage[...]{inputenc}
 
 \documentclass[%
@@ -119,57 +120,77 @@ semestral						%	sazba zprávy semestrálního projektu
 	% nadpis snímku
 	\frametitle{Cíle práce}
 	\begin{itemize}
-			\item Nastudovat
+			\item Nastudovat kybernetické útoky
 			\item Popsat
 				\begin{itemize}
-					\item nastudované
+					\item obecně
+					\item implementované
 				\end{itemize}
 			\item Implementovat
 				\begin{itemize}
-					\item nastudované
-					\item nové
+					\item NTP
+					\item SNMP
+					\item SMTP
 				\end{itemize}
-			\item Porovnat a vyhodnotit
-				\begin{itemize}
-						\item výsledky
-				\end{itemize}
+			\item Otestovat
 	\end{itemize}
 \end{frame}
 
 %%%%%%%%%%%%%
+%co je to kyberneticky utok, zbezny popis mnou vybranych utoku
 \begin{frame} 
-	\frametitle{Klíčové nástroje}
+	\frametitle{Kybernetický útok}
+	\begin{itemize}
+		\item Co je to?
+		\item DoS/DDoS
+			\begin{itemize}
+				\item C\&C
+			\end{itemize}
+		\item Spoofing
+		\item Zesílení útoků
+	\end{itemize}
 
-	% prostředí alertblok, které slouží pro zdůraznění informace
-	\begin{alertblock}{Pro práci je klíčový Eulerův vzorec}
-		$$\eul^{\jmag x}=\cos x + \jmag\sin x$$
-	\end{alertblock}
-
-	\vspace{4ex}
-	Eulerova identita je speciálním případem tohoto vzorce, jestliže dosadíme $x=\uppi$:
-
-	% prostředí block, které slouží jako informativní
-	\begin{block}{Eulerova identita}
-		$$\eul^{\jmag \uppi}=\cos \uppi + \jmag\sin \uppi,$$\\
-		odkud vyplývá
-		$$\eul^{\jmag \uppi}+1=0.$$
-	\end{block}
+%	% prostředí alertblok, které slouží pro zdůraznění informace
+%	\begin{alertblock}{Pro práci je klíčový Eulerův vzorec}
+%		$$\eul^{\jmag x}=\cos x + \jmag\sin x$$
+%	\end{alertblock}
+%
+%	\vspace{4ex}
+%	Eulerova identita je speciálním případem tohoto vzorce, jestliže dosadíme $x=\uppi$:
+%
+%	% prostředí block, které slouží jako informativní
+%	\begin{block}{Eulerova identita}
+%		$$\eul^{\jmag \uppi}=\cos \uppi + \jmag\sin \uppi,$$\\
+%		odkud vyplývá
+%		$$\eul^{\jmag \uppi}+1=0.$$
+%	\end{block}
 \end{frame} 
 
 
 %%%%%%%%%%%%%
 \begin{frame} 
-	\frametitle{Plošný spoj}
+	\frametitle{NTP Flood}
 	
 	\begin{columns}[T] 								% prostředí sloupce s umístěním nahoře
 		\begin{column}{0.4\textwidth}		% první sloupec
-			Obrázek znázorňuje model:\\[2ex]
+%			Obrázek znázorňuje modelfsdfsdfsfasf:\\[2ex]
 			%
 			\begin{itemize}
-				\item Deska
-				\item Součástky
-				\item Signály
-				\item Napájení
+				\item UDP protokol
+				\item Reflekce + amplifikace, až 556.9krát
+				\begin{itemize}
+					\item IP spoofing
+				\end{itemize}
+				\item \texttt{monlist}
+				\begin{itemize}
+					\item monitorování
+					\item 600 klientů
+				\end{itemize}
+				\item mapování ze strany útočníků
+				\item situace dnes
+				\begin{itemize}
+					\item CVE-2013-5211
+				\end{itemize}
 			\end{itemize}
 		\end{column}
 		%
@@ -177,7 +198,7 @@ semestral						%	sazba zprávy semestrálního projektu
 			\begin{figure}%	
 				\centering
 				\vspace{1cm}	              % horizontální mezera
-				\includegraphics[width=0.8\columnwidth]{obrazky/soucastky}
+				\includegraphics[width=0.8\columnwidth]{obrazky/ntp_flood_schema.png}
 				%lze vlozit popisek, ale povetsinou je to v prezentaci zbytecne
 				%\caption{Popisek obrázku}%
 				%\label{obr:ukazka}
@@ -189,30 +210,62 @@ semestral						%	sazba zprávy semestrálního projektu
 
 %%%%%%%%%%%%%
 \begin{frame} 
-	\frametitle{Výsledky}
-	\vspace{1cm}
-	\begin{table}[]
-		\centering
-		\caption{Výsledky měření mobilních sítí}
-		\label{tab:tabulka}
-			\begin{tabular}{lcc}
-				\toprule
-					Technologie  & Rychlost stahování [kB/s] & Rychlost nahrávání [kB/s] \\
-				\midrule
-					GPRS (2,5G)	& 7,2 	& 3,6\\
-					UMTS 3G     & 48 		& 48\\
-					HSPA (3,5G)	&	1\,706	&	720\\
-					LTE (4G) 		& 40\,750 & 10\,750\\
-				\bottomrule                                       
+	\frametitle{Násobení velikosti odpovědi oproti požadavku}
+	\vspace{0.5cm}
+		\begin{table}[ht]
+			\centering
+			\caption{Amplifikační útoky založené na UDP}
+			\label{tab:udp_ampl}
+			\begin{tabular}{|l|l|}
+				\hline
+				\textbf{Protokol}      & \textbf{Faktor zvětšení šířky pásma}    \\ \hline
+				NTP                    & 556.9                                   \\ \hline
+				CharGen                & 358.8                                   \\ \hline
+				DNS                    & do 179                                  \\ \hline
+				QOTD                   & 140.3                                   \\ \hline
+				Quake Network Protocol & 63.9                                    \\ \hline
+				BitTorrent             & 4.0 - 54.3                              \\ \hline
+				SSDP                   & 30.8                                    \\ \hline
+				Kad                    & 16.3                                    \\ \hline
+				SNMPv2                 & 6.3                                     \\ \hline
 			\end{tabular}
 	\end{table}
+\end{frame}
+
+%%%%%%%%%%%%%
+\begin{frame} 
+\frametitle{DoSgen}
+		\begin{figure}%	}{den}
+			\centering
+			\vspace{0.3cm}	              % horizontální mezera
+			\includegraphics[width=0.4\columnwidth]{obrazky/dosgen_halaska_diagrampng.png}
+			%lze vlozit popisek, ale povetsinou je to v prezentaci zbytecne
+			\caption{Struktura aplikace DoSgen}%
+			%\label{obr:ukazka}
+		\end{figure} 
 \end{frame}
 
 
 %%%%%%%%%%%%%
 \begin{frame} 
 	\frametitle{Závěr}
-	\dots
+	\begin{itemize}
+		\item Nastaveno testovací prostředí
+		\item Implementován a otestován 1 ze 3 útoků
+		\item Cíle
+		\begin{itemize}
+			\item Implementace zbylých + další
+			\item Popis nástrojů pro DoS
+			\item Restrukturalizace kódu
+			\item Aktualizace komponenty \texttt{trafgen}
+			\begin{itemize}
+				\item Popis konfiguračního jazyka
+			\end{itemize}
+			\item \texttt{man} stránka, RPM
+			\item Testování mimo virtuální prostředí
+			\item Rozšíření webového rozhraní
+		\end{itemize}
+	\end{itemize}
 \end{frame}
 
 
@@ -226,11 +279,11 @@ semestral						%	sazba zprávy semestrálního projektu
 \end{frame}
 
 % otázky oponenta
-\frame{
-\frametitle{Otázky oponenta}
-	\emph{Jaká je souvislost Vašeho vzorce (1.2) s~Maxwellovými rovnicemi v~integrálním tvaru?}\\[2ex]
-	%
-	Již staří Římané\,\dots
-}
+%\frame{
+%\frametitle{Otázky oponenta}
+%	\emph{Jaká je souvislost Vašeho vzorce (1.2) s~Maxwellovými rovnicemi v~integrálním tvaru?}\\[2ex]
+%	%
+%	Již staří Římané\,\dots
+%}
 
 \end{document}
