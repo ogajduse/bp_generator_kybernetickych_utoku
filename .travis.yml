@@ -13,7 +13,9 @@ deploy:
   api_key:
     secure: XbNPDH1YIwz548o/cMVXwbHfT6UqVKibFH9/yLbY/49wYlFI9dXah3WhiEsKRC+Hb46Wo+OtGVFRd701B6s/t9hHB9cGb+qgtJzTu6SjC7tCQ+JCHVqLycYtgh50ojkGpxXBlZw0NAHqNZYle7WCHbCDmbN+3dZyw7UgxZJpltFsPj+u5SaecKiB9uT+gfqfierO/ipRekbNHUAJRhv1WsFyWQw6QPfNLy/p1pM/P4enqXj/WFAiKPOeWRlK87HaPJJZ6CPUtxchz4q1tphCsQ2KTwoPP8yfhCgz5RxvPD9b9/boSWqM5wQtqdS8AmH5cHm6MRDI/yeXnSMIL9LmJvR3m9oXdc+FUTdnFUk58aNjXWeDlOs8ltw3xmPQY8tRTICb7qiVybOFZf2K99yk5WW/78eLcAgLb5b4lHNdHkO0tM5TyxNPzlT3o7ObkDhnh0yQbBe+KzcJMFuUhkLfCMoNV/JU/iyCQIoNJS2wREgMsC/AVcPUfTIefmaExc26QDlUfz34itcXddjrgaSizfyhjjuqbcbqX/uTXvIFsbiID/9bS32rJQ0ZlRovVoUGzw63WKeAD+xcKLzZI6VIlD+XqsIaloEtSEqpcHDKVw0agZKwdHijYvBA7uAINuCnkbhplqmyAc2XaHLM2OUjQDjGCjdW0G39cFC1yx6RDkc=
   file:
-  - _build/sablona-prace.tex
-  - _build/sablona-obhaj.tex
+  - _build/sablona-prace.pdf
+  - _build/sablona-obhaj.pdf
+  skip_cleanup: true
   on:
     repo: ogajduse/bp_generator_kybernetickych_utoku
+    tags: true
