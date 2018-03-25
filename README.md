@@ -1,4 +1,7 @@
 # Generátor kyebrnetických útoků
+
+[![Build Status](https://travis-ci.org/ogajduse/bp_generator_kybernetickych_utoku.svg?branch=master)](https://travis-ci.org/ogajduse/bp_generator_kybernetickych_utoku)
+
 Text semestrálního projektu vypracovaného v rámci předmětu TB2T pro studijní obor Informační bezpečnost vyučovaného na Fakultě elektrotechniky a komunikačních technologií Vysokého učení technického v Brně.
 
 Tato práce se zabývá definicí DoS útoků, rozšířením a otestováním aplikace DoSGen pro generování DoS útoků především na aplikační vrstvě.
