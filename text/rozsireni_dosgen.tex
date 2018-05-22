@@ -84,7 +84,7 @@ V dalším kroku byl do souboru \texttt{dosgen.c} doplněn nový přepínač pro
 Teoretický popis tohoto útoku je popsán v kapitole \ref{subsec:ntp_flood}.
 
 
-\section{Použití nástroje}
+\subsubsection{Použití nástroje}
 Pro spuštění NTP útoku pomocí nástroje dosgen využijme následující příkaz.
 \begin{lstlisting}
 	./dosgen -i virbr0 -P 4 --ntp -s 192.168.124.129 \
@@ -93,3 +93,4 @@ Pro spuštění NTP útoku pomocí nástroje dosgen využijme následující př
 
 Za parametrem \texttt{-i} následuje název rozhraní, skrze ktere je provoz následně generován. Parametr \texttt{-P} určuje počet jader, kolik je využito pro generování provozu, za ním následuje \texttt{--ntp} znamenající, že z dostupných útoků bude vybrán útok NTP Flood. Parametr \texttt{-s} označuje zdrojovou IP adresu, která bude uvedena v paketu, ve skutečnosti jde o IP adresu oběti. Poslední \texttt{-d} značí IP adresu, na kterou je dotaz zaslán.
 
+\subsection{SNMP Flood}

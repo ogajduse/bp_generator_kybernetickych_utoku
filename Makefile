@@ -1,4 +1,4 @@
-TEX = pdflatex -shell-escape -interaction=nonstopmode -file-line-error
+TEX = pdflatex -shell-escape -synctex=1 -interaction=nonstopmode -file-line-error
 BIB = bibtex
 
 TEXTDIR = text
