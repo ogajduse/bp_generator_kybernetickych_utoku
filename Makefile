@@ -25,6 +25,6 @@ sablona-obhaj.pdf :
 	$(TEX) sablona-obhaj.tex
 
 clean:
-	$(RM) -r *.aux *.log *.nav *.lof *.lol* *.lot *.out *.snm *.toc 
+	$(RM) -r *.aux *.log *.nav *.lof *.lol* *.lot *.out *.snm *.toc *.synctex.gz
 	$(RM) $(TEXTDIR)/*.aux
 	$(RM) *.pdf 
