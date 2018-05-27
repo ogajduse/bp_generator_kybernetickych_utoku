@@ -5,7 +5,7 @@
 Pro implementaci v rámci své práce jsem si zvolil následující útoky:
 \begin{itemize}
 	\item{NTP Flood}
-	\item{SMTP Flood}
+	\item{SMTP Flood} %todo zmenit nazev utoku
 	\item{SNMP Flood}
 \end{itemize}
 
@@ -47,6 +47,8 @@ Přihlášení uživatele do ovládacího rozhraní zajišťuje soubor \texttt{l
 \subsubsection{Back-end}
 Samotný běh aplikace zajišťuje soubor \texttt{server.js}, který načítá externí moduly systému Node.js a spouští samotnou webovou službu. Klient komunikuje se serverem pomocí protokolu HTTPS a naslouchá na portu 8888. Soubor \texttt{dosgen.js} zajišťuje zpracování přijatých HTTP požadavků od uživatele a prostřednictvím funkce \texttt{spawn} spouští či ukončuje nástroj DoSgen. Autentizace a následné přihlášení uživatele je implementováno v souborech \texttt{auth.js} a \texttt{passport.js}.
 
+%todo implementace pomocnych nastroju, ansible
+
 \section{Implementace útoků}
 Původní struktura nástroje zůstala stejná, stávající moduly byly upraveny pro funkčnost mnou implementovaných útoků.
 
@@ -54,7 +56,7 @@ Původní struktura nástroje zůstala stejná, stávající moduly byly upraven
 
 Pro implementaci tohoto útoku do nástroje DoSgen bylo nutno vytvořit konfigurační soubor, dle kterého nástroj trafgen vytvoří paket, jímž bude zaplavován NTP server. Konfigurace tohoto paketu byla umístěna do hlavičkového souboru \texttt{trafgen\_configs.h}. Do této konfigurace si následně DoSgen doplní zdrojovou a cílovou adresu IP.
 
-Dále byl do souboru \texttt{dosgen.c} doplněn nový přepínač pro tento útok. Při jeho použití je zavolána funkce \texttt{ntp\_flood} z modulu \texttt{argsParse.c}, která zajišťuje zpracování a validaci vstupních parametrů. Při kladném výsledku validace je zavolána funkce \texttt{prepare\_ntp}, která upravuje konfigurační soubor paketu použitého pro tento útok.  Následně je zavolán samotný trafgen a útok je spuštěn.
+Dále byl do souboru \texttt{dosgen.c} doplněn nový přepínač pro tento útok. Při jeho použití je zavolána funkce \texttt{ntp\_flood} z modulu \texttt{argsParse.c}, která zajišťuje zpracování a validaci vstupních parametrů. Při kladném výsledku validace je zavolána funkce \texttt{prepare\_ntp}, která upravuje konfigurační soubor paketu použitého pro tento útok. Takto upravený konfigurační soubor je uložen jako dočasný soubor \texttt{tmp.cfg}. Následně je zavolán samotný trafgen a útok je spuštěn.
 
 \noindent Parametry útoku jsou:
 \begin{itemize}
@@ -68,26 +70,50 @@ Prerekvizitou tohoto útoku je správně nastavený NTP server, který je schope
 Prvním krokem, který role provede je vypnutí výchozích Fedora repozitářů, jelikož se odkazují na dnes již neexistující URL. Následně jsou nastaveny archivní repozitáře. Dalším krokem je instalace balíčků \texttt{ntp}, \texttt{firehol} a libselinux-python. Tyto obsahují NTP démona, firewall a podpůrný balíček pro SELinux v jazyce Python nezbytný pro spuštění dalších úloh role. 
 Posledním krokem je nastavení konfiguračních souborů pro NTP démona a firewall a následné restartování těchto služeb z důvodu načtení nové konfigurace.
 
+Před spuštěním samotného playbooku \texttt{ntp.yml} je nutné ujistit se, že v souboru \texttt{hosts} je v sekci \texttt{ntp} zadána správná IP adresa nebo doménové jméno NTP serveru, který chceme konfigurovat. Poté již stačí jen spustit následující příkaz.
+
+\begin{lstlisting}[language=bash]
+ansible-playbook ntp.yml
+\end{lstlisting}
+
 Následující prerekvizitou tohoto útoku je 600 klientů, zapsaných v databázi NTP serveru. Nemáme-li možnost zajistit tento stav běžným provozem, je nutno databázi NTP serveru naplnit jinou cestou. Proto jsem přistoupil k tvorbě nástroje v jazyce Python, pomocí kterého je možno si nasimulovat větší množství klientů požadujících po NTP serveru aktualizaci času. Tento skript využívá knihoven \texttt{scapy} pro sestavení paketu a \texttt{faker} pro generování náhodné IP adresy. Skript vytvoří celkem 600 takových dotazů, čímž dosáhneme zaplnění databáze NTP serveru.
 
 
 Teoretický popis tohoto útoku je uveden v kapitole \ref{subsec:ntp_flood}.
 
 \subsubsection{Použití nástroje}
-Pro spuštění NTP útoku pomocí nástroje dosgen využijme následující příkaz.
+Pro spuštění NTP útoku pomocí nástroje DoSgen využijme následující příkaz.
 \begin{lstlisting}
 	./dosgen -i virbr0 -P 4 --ntp -s 192.168.124.129 \
                      -d 192.168.124.14
 \end{lstlisting}
 
-Za parametrem \texttt{-i} následuje název rozhraní, skrze ktere je provoz následně generován. Parametr \texttt{-P} určuje počet jader, kolik je využito pro generování provozu, za ním následuje \texttt{--ntp} znamenající, že z dostupných útoků bude vybrán útok NTP Flood. Parametr \texttt{-s} označuje zdrojovou IP adresu, která bude uvedena v paketu, ve skutečnosti jde o IP adresu oběti. Poslední \texttt{-d} značí IP adresu NTP serveru, na který je dotaz zaslán.
+Za parametrem \texttt{-i} následuje název rozhraní, skrze které je provoz následně generován. Parametr \texttt{-P} určuje počet jader, kolik je využito pro generování provozu, za ním následuje \texttt{--ntp} znamenající, že z dostupných útoků bude vybrán útok NTP Flood. Parametr \texttt{-s} označuje zdrojovou IP adresu, která bude uvedena v paketu, ve skutečnosti jde o IP adresu oběti. Poslední \texttt{-d} značí IP adresu NTP serveru, na který je dotaz zaslán.
 
 \subsection{SNMP Flood}
+Při rozšíření nástroje DoSgen o útok SNMP flood bylo postupováno velmi podobným postupem jako při implementaci útoku NTP flood. Nejvýznamnější změna byla provedena v souboru \texttt{trafgen\_configs.h}, ve kterém je uvedena konfigurace paketu, který je používán pro samotný útok.
 
+\noindent Parametry útoku jsou:
+\begin{itemize}
+	\item \textbf{s} Zdrojová IP adresa, adresa oběti, na kterou SNMP agent zašle odpověď
+	\item \textbf{d} Cílová IP adresa, adresa SNMP agenta
+\end{itemize}
 
+\subsubsection{Prerekvizity}
+Před spuštěním útoku je nutné se přesvědčit, že je správně nastavený SNMP agent, který bude odpovídat na \texttt{getBulkRequest} při dotazu na OID 1.3.6.1.2.1. a community stringu nastaveném na \textit{public}.
+
+Pro zjednodušení nastavení tohoto serveru je v adresáři \texttt{dosgen-ansible} implementován Ansible playbook \texttt{snmp.yml}, který toto nastavení uživateli zjednoduší a urychlí. Ze strany uživatele je nutný pouze zásah do souboru \texttt{hosts}, kde je nutno vložit v sekci \texttt{snmp} IP adresu nebo doménové jméno stanice, kterou chceme nastavovat.
+
+Implementovaná role \texttt{snmp} nejprve provede instalaci balíčků net-snmp a net-snmp-utils v nejnovější verzi, provede změnu pravidel firewallu ve prospěch SNMP démona a toho následně spustí. Dále je upraven konfigurační soubor \texttt{/etc/snmp/snmpd.conf} a restartován SNMP démon za účelem načtení nové konfigurace. Posledním krokem je test SNMP démona, tedy, zda odpovídá na příchozí dotazy.
+
+Samotné spuštění tohoto playbooku provedeme následujícím příkazem.
+
+\begin{lstlisting}[language=bash]
+ansible-playbook snmp.yml
+\end{lstlisting}
 
 \section{Rozšíření webového rozhraní}
-
+Rozšířena byla také webová aplikace, ze které může uživatel spouštět útoky pohodlně z webového prohlížeče. Byl také přepracován inicializační skript a aktualizovány balíčky, na kterých je tato webová aplikace závislá.
 
 \subsubsection{Aktualizace závislostí}
 Webové rozhraní je závislé na externích knihovnách. Tyto jsou definováný v souboru \texttt{package.json}. Bylo provedeno ověření, zda definované verze závislých knihoven neobsahují zranitelnosti. V knihovně EJS (Embedded JavaScript) ve verzi 2.3.1 byly nalezeny celkem tři zranitelnosti. Jsou to CVE-2017-1000188, CVE-2017-1000189 a CVE-2017-1000228. Pro odstranění těchto zranitelností byla tato knihovna aktualizována na novější verzi 2.5.5. Funkčnost webového rozhraní nebyla touto změnou ovlivněna.
@@ -97,7 +123,7 @@ Většina distribucí operačního systému Linux nahradila program \texttt{init
 
 Inicializační skript byl přemístěn do složky \texttt{dosgen-web}. Z tohoto souboru byla následně odebrána část, v níž jsou definovány proměnné prostředí pro běh serveru do souboru \texttt{dosgen-web.env}. Tento soubor je v inicializačním skriptu otevřen a proměnné prostředí jsou z něj vyexportovány. Skript byl obohacen o kontrolu práv uživatele jež jej spouští a o další kontroly, které se provádí před spuštěním samotného webového serveru.
 
-Log serveru byl přemístěn z kořenového adresáře webové aplikace do \texttt{/var/log/dosgen}. Soubor informující o čísle procesu, PID (process identifier), bylo přemístěno do adresáře \texttt{/var/run}.
+Log serveru byl přemístěn z kořenového adresáře webové aplikace do \newline \texttt{/var/log/dosgen}. Soubor informující o čísle procesu, PID (process identifier), bylo přemístěno do adresáře \texttt{/var/run}.
 
 Byla přidána jednotka \texttt{dosgen-web.service}, která slouží ke spouštění, ukončování a kontrole procesu webového serveru. Ta nahrazuje inicializační skript na distribucích se systemd démonem. Tato jednotka taktéž využívá soubor s proměnnými prostředí. Stejné prostředí, v němž je server spuštěn zajišťuje maximální kompatibilita a konzistenci aplikace bez rozdílu zda je použit init skript či systemd jednotka.
 
@@ -105,7 +131,6 @@ Byla přidána jednotka \texttt{dosgen-web.service}, která slouží ke spoušt�
 Současná implementace webové aplikace umožňuje snadné přidání nově implementovaných útoků do nástroje DoSgen.
 
 V souboru \texttt{dosgen-web/public/javascripts/client.js} jsou v proměnné nazvané \texttt{attacks} pomocí JSON (JavaScript Object Notation) zápisu zadány všechny dostupné útoky a jejich potřebné atributy, jak je znázorněno ve výpisu \ref{fig:dosgen-web-attack-json}. Přidání nových útoků proběhlo rozšířením této struktury.
-
 
 \lstset{
 	string=[s]{"}{"},

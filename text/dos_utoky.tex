@@ -324,7 +324,7 @@ Protokol SNMP definuje více typů dotazů \cite{Odom2009}. Nejpoužívanější
 	\label{fig:snmp-protocol-schema}
 \end{figure}
 
-SNMP flood využívá dotaz \texttt{GetBulkRequest} pomocí, kterého je manažer schopen od agenta získat velké množství informací najednou.
+SNMP flood využívá dotaz protokol SNMPv2c a dotaz \texttt{GetBulkRequest} pomocí, kterého je manažer schopen od agenta získat velké množství informací najednou.
 
 Parametry obsaženými v tomto dotazu jsou \texttt{nonrepeaters} a \texttt{max-repetitions}. \texttt{Nonrepeaters} říká, že prvních \textit{N} objektů má být získáno jednorázovým voláním příkazu \texttt{GetNextRequest}. Parametr \texttt{max repetitions}, určuje kolikrát má agent provést \texttt{GetNextRequest} dotaz nad zadanými objekty \cite{Kukla2010}. Z tohoto popisu je zjevné, že agent vrací  6krát větší odpověď ve srovnání s dotazem, dochází k amplifikaci. Tohoto je využito při sestavení útoku. Jedná se tedy o útok reflektovaný (DRDoS) s amplifikací. Tento útok také využívá skutečnosti, že spousta agentů je nastavena tak, že odpovídá na dotazy s \texttt{community string} nastaveným na hodnotu \texttt{public}. Doporučení hovoří o změně této hodnoty, chceme-li zabránit možné participaci agenta na DoS útoku \cite{Stange-snmp-amplification}. Schéma takového útoku je znázorněno na obrázku \ref{fig:snmp-flood-schema}.
 
