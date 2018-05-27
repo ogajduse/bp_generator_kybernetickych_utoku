@@ -11,10 +11,12 @@ Pro implementaci v rámci své práce jsem si zvolil následující útoky:
 
 Teoretický popis těchto útoků je uveden v kapitole \ref{sec:implementovane_utoky}. V první fázi bylo na místě zvážení, zda-li je možno využít knihovny \texttt{LibDoS} při implementaci vlastních útoků. Výsledným zjištěním bylo, že povaha této knihovny nebrání implementaci mnou vybraných útoků.
 
+Při popisu struktury nástroje bylo čerpáno z diplomových prací Petra Halašky \cite{Halaska2016} a Filipa Gregra \cite{Gregr2017}.
+
 Při vývoji bylo použito prostředí zmíněného v kapitole \ref{chap:testovani}.
 
 \section{Struktura nástroje}
-%dosgen, trafgen wrapper, libdos, tcpgen, tcpgen?, gui
+%tcpgen?
 Nástroj DoSgen se sestává z více komponent, které ve výsledku tvoří jeden celek. V následujících kapitolách jsou právě tyto popsány.
 
 Samotný dosgen se stará o převzetí vstupních argumentů od uživatele. Implementuje dodatečné funkce pro jejich kontrolu a zabezpečuje formátování pro další použití a jiná opatření.
@@ -36,53 +38,40 @@ Knihovna LibDoS, kterou DoSgen využívá, sdružuje knihovnu vytvořenou z nás
 \subsection{Trafgen wrapper}
 Hlavním úkolem modulu \texttt{Trafgen wrapper} je shromáždění potřebných parametrů pro jejich předání nástroji trafgen, ve výsledku tedy úspěšné spuštění útoku. Trafgen na vstupu očekává soubor s konfigurací paketu. Ten je taktéž vytvořen tímto modulem, který jej sestaví ze souboru \texttt{trafgen\_configs.h}, v němž se nachází pro každý útok šablony, do kterých se doplní informace získané od uživatele.
 
-%TODO \section{Konfigurační jazyk nástroje Trafgen}
-%přemístit k popisu trafgenu?
+\subsection{Webové rozhraní}
+Nástroj DoSgen obsahuje vlastní implementaci webového rozhraní pomocí frameworku \texttt{Node.js}, což je otevřený systém pro vývoj asynchronních webových aplikací, nejčastěji na straně serveru.
 
-\section{Instalace nástroje}
-%docker
-V této kapitole bude popsána instalace nástroje DoSgen na operačním systému Fedora. Jsou zde zmíněny knihovny, jež je třeba instalovat pro jeho plnou funkčnost. 
+\subsubsection{Front-end}
+Přihlášení uživatele do ovládacího rozhraní zajišťuje soubor \texttt{login.ejs}. Uživatel je přihlášen při zadání údajů obsažených v konfiguračním souboru \texttt{config.json}. Další požadavky uživatele zpracovává \texttt{dosgen.ejs}, který definuje hlavní část ovládacího rozhraní. To se skládá z bloku ve formě formuláře pro zadání základních údajů pro realizaci útoku, rolovací nabídky s výběrem dostupných útoků, tlačítka pro odhlášení, ovládacích tlačítek a okna pro výpis nástroje DoSgen. Hodnoty pro jednotlivé útoky je možné zadávat v blocích. Vzhled stránky je definován pomocí kaskádových stylů CSS.
 
-\noindent Instalace následujících knihoven je nutností, jelikož jsou přímými závislostmi nástroje trafgen.
-\begin{lstlisting}
-dnf -y install flex bison libnl3-devel libssh-devel
-\end{lstlisting}
-
-\noindent Dále je třeba nainstalovat nástroje potřebné ke kompilaci kódu nástroje.
-\begin{lstlisting}
-dnf -y install make pkg-config gcc-c++
-\end{lstlisting}
-
-\noindent Instalace následujících balíčků je pouze volitelné, jde o užitečné nástroje, které najdou své místo vedle nástroje DoSgen.
-\begin{lstlisting}
-dnf -y install tcptrack nmap httping john iftop nload \
-iputils net-tools
-\end{lstlisting}
-
-\noindent Dále je potřeba přeložit zdrojový kód. Provedeme příkazem make:
-\begin{lstlisting}
-cd dosgen/dosgen
-make
-\end{lstlisting}
-
-V rámci této práce byl vytvořen také Dockerfile, pomocí kterého lze sestavit kontejner s nainstalovaným nástrojem DoSgen. Výhoda tohoto kontejneru spočívá v tom, že procesy spuštěné v kontejneru jsou oddělené od procesů v hostitelské stanici. Tento kontejner staví na operačním systému Fedora ve verzi 27. Sestavení kontejneru a jeho spuštění lze docílit následovně.
-\begin{lstlisting}
-docker build -t <NÁZEV_KONTEJNERU> .
-docker run <NÁZEV_KONTEJNERU>
-\end{lstlisting}
+\subsubsection{Back-end}
+Samotný běh aplikace zajišťuje soubor \texttt{server.js}, který načítá externí moduly systému Node.js a spouští samotnou webovou službu. Klient komunikuje se serverem pomocí protokolu HTTPS a naslouchá na portu 8888. Soubor \texttt{dosgen.js} zajišťuje zpracování přijatých HTTP požadavků od uživatele a prostřednictvím funkce \texttt{spawn} spouští či ukončuje nástroj DoSgen. Autentizace a následné přihlášení uživatele je implementováno v souborech \texttt{auth.js} a \texttt{passport.js}.
 
 \section{Implementace útoků}
 Původní struktura nástroje zůstala stejná, stávající moduly byly upraveny pro funkčnost mnou implementovaných útoků.
 
 \subsection{NTP Flood}
 
-Prerekvizitou tohoto útoku je 600 klientů, zapsaných v databázi NTP serveru. Toto nelze nasimulovat z jedné uživatelské stanice běžným způsobem. Proto jsem přistoupil k tvorbě nástroje v jazyce Python, pomocí kterého si nasimuluji množství klientů požadujících po NTP serveru aktualizaci času. Tento skript využívá knihoven \texttt{scapy} pro sestavení paketu a \texttt{faker} pro generování náhodné IP adresy.
+Pro implementaci tohoto útoku do nástroje DoSgen bylo nutno vytvořit konfigurační soubor, dle kterého nástroj trafgen vytvoří paket, jímž bude zaplavován NTP server. Konfigurace tohoto paketu byla umístěna do hlavičkového souboru \texttt{trafgen\_configs.h}. Do této konfigurace si následně DoSgen doplní zdrojovou a cílovou adresu IP.
 
-Dalším krokem bylo umístění konfigurace paketu do hlavičkového souboru \newline \texttt{trafgen\_configs.h}. Do této konfigurace si následně DoSgen doplní zdrojovou a cílovou adresu IP. 
-V dalším kroku byl do souboru \texttt{dosgen.c} doplněn nový přepínač pro tento útok. Při jeho použití je zavolána funkce \texttt{ntp\_flood} z modulu \texttt{argsParse.c}, která zajišťuje validaci vstupních parametrů. Při kladném výsledku validace je zavolána funkce \texttt{prepare\_ntp}, která upravuje konfigurační soubor. Následně je zavolán samotný trafgen a útok je spuštěn.
+Dále byl do souboru \texttt{dosgen.c} doplněn nový přepínač pro tento útok. Při jeho použití je zavolána funkce \texttt{ntp\_flood} z modulu \texttt{argsParse.c}, která zajišťuje zpracování a validaci vstupních parametrů. Při kladném výsledku validace je zavolána funkce \texttt{prepare\_ntp}, která upravuje konfigurační soubor paketu použitého pro tento útok.  Následně je zavolán samotný trafgen a útok je spuštěn.
 
-Teoretický popis tohoto útoku je popsán v kapitole \ref{subsec:ntp_flood}.
+\noindent Parametry útoku jsou:
+\begin{itemize}
+	\item \textbf{s} Zdrojová IP adresa, adresa oběti, na kterou NTP server zašle odpověď
+	\item \textbf{d} Cílová IP adresa, adresa NTP serveru
+\end{itemize}
 
+\subsubsection{Prerekvizity}
+Prerekvizitou tohoto útoku je správně nastavený NTP server, který je schopen odpovídat na požadavek \texttt{MON\_GETLIST\_1}. Pro tento účel byla vytvořena samostatná role pro Ansible, která nastaví NTP server do požadovaného stavu. Tato role je určena pro systém Fedora 14. Tato verze byla vybrána z důvodu přítomnosti balíčku \texttt{ntp} ve Fedora repozitářích ve verzi 4.2.6, která neobsahuje opravy, které znesnadňují použití funkce \texttt{monlist} \cite{ntpbug1532}.
+
+Prvním krokem, který role provede je vypnutí výchozích Fedora repozitářů, jelikož se odkazují na dnes již neexistující URL. Následně jsou nastaveny archivní repozitáře. Dalším krokem je instalace balíčků \texttt{ntp}, \texttt{firehol} a libselinux-python. Tyto obsahují NTP démona, firewall a podpůrný balíček pro SELinux v jazyce Python nezbytný pro spuštění dalších úloh role. 
+Posledním krokem je nastavení konfiguračních souborů pro NTP démona a firewall a následné restartování těchto služeb z důvodu načtení nové konfigurace.
+
+Následující prerekvizitou tohoto útoku je 600 klientů, zapsaných v databázi NTP serveru. Nemáme-li možnost zajistit tento stav běžným provozem, je nutno databázi NTP serveru naplnit jinou cestou. Proto jsem přistoupil k tvorbě nástroje v jazyce Python, pomocí kterého je možno si nasimulovat větší množství klientů požadujících po NTP serveru aktualizaci času. Tento skript využívá knihoven \texttt{scapy} pro sestavení paketu a \texttt{faker} pro generování náhodné IP adresy. Skript vytvoří celkem 600 takových dotazů, čímž dosáhneme zaplnění databáze NTP serveru.
+
+
+Teoretický popis tohoto útoku je uveden v kapitole \ref{subsec:ntp_flood}.
 
 \subsubsection{Použití nástroje}
 Pro spuštění NTP útoku pomocí nástroje dosgen využijme následující příkaz.
@@ -91,6 +80,55 @@ Pro spuštění NTP útoku pomocí nástroje dosgen využijme následující př
                      -d 192.168.124.14
 \end{lstlisting}
 
-Za parametrem \texttt{-i} následuje název rozhraní, skrze ktere je provoz následně generován. Parametr \texttt{-P} určuje počet jader, kolik je využito pro generování provozu, za ním následuje \texttt{--ntp} znamenající, že z dostupných útoků bude vybrán útok NTP Flood. Parametr \texttt{-s} označuje zdrojovou IP adresu, která bude uvedena v paketu, ve skutečnosti jde o IP adresu oběti. Poslední \texttt{-d} značí IP adresu, na kterou je dotaz zaslán.
+Za parametrem \texttt{-i} následuje název rozhraní, skrze ktere je provoz následně generován. Parametr \texttt{-P} určuje počet jader, kolik je využito pro generování provozu, za ním následuje \texttt{--ntp} znamenající, že z dostupných útoků bude vybrán útok NTP Flood. Parametr \texttt{-s} označuje zdrojovou IP adresu, která bude uvedena v paketu, ve skutečnosti jde o IP adresu oběti. Poslední \texttt{-d} značí IP adresu NTP serveru, na který je dotaz zaslán.
 
 \subsection{SNMP Flood}
+
+
+
+\section{Rozšíření webového rozhraní}
+
+
+\subsubsection{Aktualizace závislostí}
+Webové rozhraní je závislé na externích knihovnách. Tyto jsou definováný v souboru \texttt{package.json}. Bylo provedeno ověření, zda definované verze závislých knihoven neobsahují zranitelnosti. V knihovně EJS (Embedded JavaScript) ve verzi 2.3.1 byly nalezeny celkem tři zranitelnosti. Jsou to CVE-2017-1000188, CVE-2017-1000189 a CVE-2017-1000228. Pro odstranění těchto zranitelností byla tato knihovna aktualizována na novější verzi 2.5.5. Funkčnost webového rozhraní nebyla touto změnou ovlivněna.
+
+\subsubsection{Aktualizace a rozšíření inicializačního skriptu}
+Většina distribucí operačního systému Linux nahradila program \texttt{init} za nástroj systemd jež je spuštěn jako první proces. V těchto distribucích již nelze nadále použít inicializační skript, který slouží pro spuštění webového serveru na pozadí z důvodu odlišného přístupu \texttt{systemd} ke spouštění procesů. Z tohoto důvodu došlo k následujícím úpravám.
+
+Inicializační skript byl přemístěn do složky \texttt{dosgen-web}. Z tohoto souboru byla následně odebrána část, v níž jsou definovány proměnné prostředí pro běh serveru do souboru \texttt{dosgen-web.env}. Tento soubor je v inicializačním skriptu otevřen a proměnné prostředí jsou z něj vyexportovány. Skript byl obohacen o kontrolu práv uživatele jež jej spouští a o další kontroly, které se provádí před spuštěním samotného webového serveru.
+
+Log serveru byl přemístěn z kořenového adresáře webové aplikace do \texttt{/var/log/dosgen}. Soubor informující o čísle procesu, PID (process identifier), bylo přemístěno do adresáře \texttt{/var/run}.
+
+Byla přidána jednotka \texttt{dosgen-web.service}, která slouží ke spouštění, ukončování a kontrole procesu webového serveru. Ta nahrazuje inicializační skript na distribucích se systemd démonem. Tato jednotka taktéž využívá soubor s proměnnými prostředí. Stejné prostředí, v němž je server spuštěn zajišťuje maximální kompatibilita a konzistenci aplikace bez rozdílu zda je použit init skript či systemd jednotka.
+
+\subsubsection{Přidání nově implementovaných útoků}
+Současná implementace webové aplikace umožňuje snadné přidání nově implementovaných útoků do nástroje DoSgen.
+
+V souboru \texttt{dosgen-web/public/javascripts/client.js} jsou v proměnné nazvané \texttt{attacks} pomocí JSON (JavaScript Object Notation) zápisu zadány všechny dostupné útoky a jejich potřebné atributy, jak je znázorněno ve výpisu \ref{fig:dosgen-web-attack-json}. Přidání nových útoků proběhlo rozšířením této struktury.
+
+
+\lstset{
+	string=[s]{"}{"},
+	stringstyle=\color{blue},
+	comment=[l]{:},
+	commentstyle=\color{black},
+}
+
+\begin{figure} [ht]
+	\centering
+	\begin{lstlisting}
+	{
+     "name": "NTP Flood ",
+     "id": "ntp", //ID
+     "fields": [
+       ["s", "Source IP address", "Specify your target",
+        asterisk],
+       ["d", "Destination IP address", "Specify NTP server",
+        asterisk],
+       ["p", "Port", "Empty means port random"],
+     ]
+	}	
+	\end{lstlisting}
+	\caption{Ukázka přidání nového útoku do webové aplikace}
+	\label{fig:dosgen-web-attack-json}
+\end{figure}

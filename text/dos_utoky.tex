@@ -61,8 +61,7 @@ služby.
 Boti mohou být rozmístěni kdekoli po světě, což znesnadňuje ochranu tím, že nelze
 jednoznačně podle geolokační stopy IP adresy filtrovat provoz z~konkrétní země, což je
 podpořeno možností měnit zdrojovou adresu v~IP datagramu, tzv. IP spoofing.
-%TODO:obrazek utoku za pomoci spoofovane ip adresy
-%http://2.bp.blogspot.com/-rYIV6yeCTeo/UI7d4414dAI/AAAAAAAAAP4/zhmngzNMKyA/s1600/b0004999_07053315.jpg
+
 %TODO:zde vlozit obrazek ddos utoku
 
 \subsection{Zesílené útoky}
@@ -182,7 +181,7 @@ přijatou zprávu odpovídat zprávou ICMP (Destination unreachable - \uv{Cíl n
 \begin{figure} [ht]
 	\centering
 	\includegraphics[width=0.9\textwidth]{obrazky/udp_flood_schema.png} %.pdf
-	\caption{Schéma UDP Flood útoku}
+	\caption{Schéma UDP Flood útoku.}
 	\label{fig:udp_flood_schema-img}
 \end{figure}
 
@@ -235,14 +234,13 @@ V této kapitole jsou rozebrány útoky, které byly implementovány do aplikace
 \label{subsec:ntp_flood}
 %http://www.ntp.org/documentation.html
 %https://www.csirt.cz/page/2793/prevence-zneuziti-ntp-k-ntp-amplification-utokum/
-%TODO schéma útoku
 Protokol aplikační vrstvy, NTP slouží k synchronizaci času mezi stanicemi v síti.
 Využívá protokol UDP a komunikuje na portu 123. Schéma tohoto útoku je na obr. \ref{fig:ntp_schema-img}.
 
 \begin{figure} [ht]
 	\centering
-	\includegraphics[width=0.9\textwidth]{obrazky/ntp_flood_schema.png} %.pdf
-	\caption{Schéma NTP útoku}
+	\includegraphics[width=0.9\textwidth]{obrazky/ntp_flood_schema.png}
+	\caption{Schéma NTP útoku.}
 	\label{fig:ntp_schema-img}
 \end{figure}
 
@@ -259,8 +257,8 @@ NTP serveru, kterou provádí funkce monlist.
 %obrazek-screen wireshark
 \begin{figure} [ht]
 	\centering
-	\includegraphics[width=0.9\textwidth]{obrazky/mon_getlist_1_wireshark.png} %.pdf
-	\caption{Dotaz na NTP server s kódem žádosti 42 - monlist}
+	\includegraphics[width=0.9\textwidth]{obrazky/mon_getlist_1_wireshark.png}
+	\caption{Dotaz na NTP server s kódem žádosti 42 - monlist.}
 	\label{fig:monlist_get_wireshark-img}
 \end{figure}
 
@@ -284,8 +282,8 @@ server nám vrací 600 záznamů nepočítaje první dva řádky výpisu.
 %TODO přidat screenshot namisto listingu
 \begin{figure} [ht]
 	\centering
-	\includegraphics[width=0.9\textwidth]{obrazky/ntpdc_monlist_terminal_screen.png} %.pdf
-	\caption{Dotaz na NTP server s kódem žádosti 42 - monlist skrze příkaz \texttt{ntpdc}}
+	\includegraphics[width=0.9\textwidth]{obrazky/ntpdc_monlist_terminal_screen.png}
+	\caption{Dotaz na NTP server s kódem žádosti 42 - monlist skrze příkaz \texttt{ntpdc}.}
 	\label{fig:monlist_get_terminal-img}
 \end{figure}
 
@@ -294,28 +292,52 @@ je příkaz \texttt{monlist} zcela odstraněn. Chceme-li zůstat na aktuální v
 je nutno změnit konfiguraci v souboru \texttt{/etc/ntp.conf}, a to přidáním direktivy
 \texttt{noquery} do řádku začínajícího slovy \uv{\texttt{restrict default}} a následně přidáním
 \texttt{disable monitor} na nový řádek konfiguračního souboru. 
-Celá tato zranitelnost byla popsána v CVE-2013-5211. %TODO citovat CVE
+Celá tato zranitelnost byla popsána v CVE-2013-5211 \cite{CVE-2013-5211}.
 
 Balíček NTP serveru pro některé distribuce již v prvotní čisté instalaci obsahuje korektně
 nastavený konfigurační soubor. Například v systémech RHEL a Fedora byla tato direktiva
-přítomna dlouho před vydáním tohoto CVE. %TODO citovat specfile nebo bugzillu?
+přítomna dlouho před vydáním tohoto CVE \cite{RHBZ1047854}.
 
 \subsection{SNMP flood}
 \label{subsec:snmp_flood}
 Protokol SNMP je jednoduchý a zároveň široce rozšířený aplikační protokol pracující nad UDP. Používá se pro sběr dat potřebných pro správu sítě a je součástí sady internetových protokolů, používá port 161.\cite{rfc1157}. Existují tři verze tohoto protokolu, kdy SNMPv1 zajišťuje základní funkcionalitu SNMP, SNMPv2c přidává k předchozí verzi autentizaci a třetí verze (SNMPv3) je navíc obohacen o šifrování. V současné době nejvíce zařízení podporuje druhou verzi.
-%todo schema normalni komunikace na snmp
 
-Protokol SNMP definuje dva typy zařízení agenta a správce (manažer). Agent je program spuštěný na spravovaném zařízení v síti, který odpovídá na požadavky od manažera a jž je spuštěn za účelem sběru informací o zařízení, na kterém je spuštěn a uložení těchto informací do MIB (Management Information Base). Manažer je program, který je spuštěn na síťové stanici, dotazuje se agenta pomocí SNMP operací a přijímá odpovědi. Účelem je získání informací o agentovi a jejich následný sběr a prezentace získaných dat. Takto je možno sledovat zátěž dotazovaného systému, životnost zobrazovacího válce tiskárny aj. Správce také může spravovanému zařízení některé hodnoty i nastavovat. Každá SNMP zpráva obsahuje tzv. \texttt{community string}, jež slouží jako kombinace uživatelského jména a hesla. 
-Při práci se SNMP protokolem není třeba MIB, je však třeba znát OID (Object Identifier), který jednoznačně identifikuje specifickou hodnotu uloženou v MIB databázi. Např. OID 1.3.6.1.2.1.1 je číslo identifikující podstrom informací \texttt{System}, který poskytuje informace o době běhu systému, doménové jméno aj. 
+Protokol SNMP definuje dva typy zařízení agenta a správce (manažer). Agent je program spuštěný na spravovaném zařízení v síti, který odpovídá na požadavky od manažera a jž je spuštěn za účelem sběru informací o zařízení, na kterém je spuštěn a uložení těchto informací do MIB (Management Information Base). Manažer je program, který je spuštěn na síťové stanici, dotazuje se agenta pomocí SNMP operací a přijímá odpovědi. Účelem je získání informací o agentovi a jejich následný sběr a prezentace získaných dat \cite{Skrivanek2006}. Takto je možno sledovat zátěž dotazovaného systému, životnost zobrazovacího válce tiskárny aj. Správce také může spravovanému zařízení některé hodnoty i nastavovat. Každá SNMP zpráva obsahuje tzv. \texttt{community string}, jež slouží jako kombinace uživatelského jména a hesla. Na obrázku \ref{fig:snmp-network-schema} je zobrazena modelová síť, ve které se nacházejí zařízení využívající SNMP protokol.
 
-Protokol SNMP definuje více typů dotazů. Nejpoužívanějšími jsou \texttt{GetRequest}, \texttt{GetNextRequest} a \texttt{GetBulkRequest}. Dotazem \texttt{GetRequest} lze získat určitou hodnotu z MIB, v dotazu \texttt{GetNextRequest} zasíláme konkrétní OID a agent v odpovědi zašle hodnotu v MIB, která je hodnotou následující pro hodnotu v dotazu. SNMP flood využívá dotaz \texttt{GetBulkRequest} pomocí, kterého je manažer schopen od agenta získat velké množství informací najednou.
-%TODO: zdroj ^^^ http://skriv.wz.cz/MPS/SNMP/index.html
-%TODO: zdroj https://www.vutbr.cz/www_base/zav_prace_soubor_verejne.php?file_id=117440
-Parametry obsaženými v tomto dotazu jsou \texttt{nonrepeaters} a \texttt{max-repetitions}. \texttt{Nonrepeaters} říká, že prvních \textit{N} objektů má být získáno jednorázovým voláním příkazu \texttt{GetNextRequest}. Parametr \texttt{max repetitions}, určuje kolikrát má agent provést \texttt{GetNextRequest} dotaz nad zadanými objekty. Z tohoto popisu je zjevné, že agent vrací  6krát větší odpověď ve srovnání s dotazem, dochází k amplifikaci. Tohoto je využito při sestavení útoku. Jedná se tedy o útok reflektovaný (DRDoS) s amplifikací. Tento útok také využívá skutečnosti, že spousta agentů je nastavena tak, že odpovídá na dotazy s \texttt{community string} nastaveným na hodnotu \texttt{public}. Doporučení hovoří o změně této hodnoty, chceme-li zabránit možné participaci agenta na DoS útoku. Schéma takového útoku je znázorněno na obrázku.
-%todo ^^ zdroj: https://support.steadfast.net/knowledgebase/article/View/110/0/preventing-snmp-amplication-attacks 
-%https://www.fi.muni.cz/~kas/pv090/referaty/2015-jaro/snmp.html
+Při práci se SNMP protokolem není třeba znalost celé MIB, je však třeba znát OID (Object Identifier), který jednoznačně identifikuje specifickou hodnotu uloženou v MIB databázi. Např. OID 1.3.6.1.2.1.1 je číslo identifikující podstrom informací \texttt{System}, který poskytuje informace o době běhu systému, doménové jméno aj.
+
+\begin{figure}[!h]
+	\begin{center}
+		\includegraphics[width=0.9\textwidth]{obrazky/snmp_network_schema.png}
+	\end{center}
+	\caption{Schéma komunikace SNMP zařízení v modelové síti.}
+	\label{fig:snmp-network-schema}
+\end{figure}
+
+Protokol SNMP definuje více typů dotazů \cite{Odom2009}. Nejpoužívanějšími jsou \texttt{GetRequest}, \texttt{GetNextRequest} a \texttt{GetBulkRequest}. Dotazem \texttt{GetRequest} lze získat určitou hodnotu z MIB, v dotazu \texttt{GetNextRequest} zasíláme konkrétní OID a agent v odpovědi zašle hodnotu v MIB, která je hodnotou následující pro hodnotu zaslanou v dotazu. Obrázek \ref{fig:snmp-protocol-schema} znázorňuje komunikaci dvou entit, manažera a agenta, prostřednictvím zmíněných dotazů.
+
+\begin{figure}[!h]
+	\begin{center}
+		\includegraphics[width=0.9\textwidth]{obrazky/snmp_protocol_schema.png}
+	\end{center}
+	\caption{Schéma komunikace manažera a agenta pomocí SNMP protokolu.}
+	\label{fig:snmp-protocol-schema}
+\end{figure}
+
+SNMP flood využívá dotaz \texttt{GetBulkRequest} pomocí, kterého je manažer schopen od agenta získat velké množství informací najednou.
+
+Parametry obsaženými v tomto dotazu jsou \texttt{nonrepeaters} a \texttt{max-repetitions}. \texttt{Nonrepeaters} říká, že prvních \textit{N} objektů má být získáno jednorázovým voláním příkazu \texttt{GetNextRequest}. Parametr \texttt{max repetitions}, určuje kolikrát má agent provést \texttt{GetNextRequest} dotaz nad zadanými objekty \cite{Kukla2010}. Z tohoto popisu je zjevné, že agent vrací  6krát větší odpověď ve srovnání s dotazem, dochází k amplifikaci. Tohoto je využito při sestavení útoku. Jedná se tedy o útok reflektovaný (DRDoS) s amplifikací. Tento útok také využívá skutečnosti, že spousta agentů je nastavena tak, že odpovídá na dotazy s \texttt{community string} nastaveným na hodnotu \texttt{public}. Doporučení hovoří o změně této hodnoty, chceme-li zabránit možné participaci agenta na DoS útoku \cite{Stange-snmp-amplification}. Schéma takového útoku je znázorněno na obrázku \ref{fig:snmp-flood-schema}.
+
 %http://net-snmp.sourceforge.net/wiki/index.php/GETBULK
-% todo: obrazek pridat
+
+\begin{figure}[!h]
+	\begin{center}
+		\includegraphics[width=0.9\textwidth]{obrazky/snmp_flood_schema.png}
+	\end{center}
+	\caption{Schéma záplavového útoku SNMP flood.}
+	\label{fig:snmp-flood-schema}
+\end{figure}
+
 Útočník zasílá dotaz \texttt{GetBulkRequest} s podvrženou zdrojovou IP adresou na adresu SNMP agenta. Agent následně zasílá odpověď na útočníkem podvrženou adresu, tedy na adresu oběti. Služba jež poskytuje oběť se tedy stává nedostupnou a dochází k odepření služby. 
 Útok je účinnější při použití více SNNP agentů útočících na jeden cíl.
 

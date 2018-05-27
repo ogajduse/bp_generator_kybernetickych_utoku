@@ -1,225 +1,190 @@
-\chapter{Některé příkazy balíčku \texttt{thesis}}
+\chapter{Dokumentace nástroje DoSgen}
+%makefiles zminit
 
-\section{Příkazy pro sazbu veličin a jednotek}
+\section{Instalace}
+V této kapitole bude popsána instalace nástroje DoSgen na operačním systému Fedora. Jsou zde zmíněny knihovny, jež je třeba instalovat pro jeho plnou funkčnost. 
 
-\begin{table}[!h]
-  \caption{Přehled příkazů pro matematické prostředí }
-  \begin{center}
-  	\small
-	  \begin{tabular}{|c|c|c|c|}
-	    \hline
-	    Příkaz    						& Příklad 					& Zdroj příkladu  							& Význam  \\
-	    \hline\hline
-	    \verb|\textind{...}|	& $\beta_\textind{max}$ 	& \verb|$\beta_\textind{max}$|	& textový index \\
-	    \hline
-	    \verb|\konst{...}| 		& $\konst{U}_\textind{in}$ 				& \verb|$\konst{U}_\textind{in}$|		& konstantní veličina \\
-	    \hline
-	    \verb|\prom{...}| 		& $\prom{u}_\textind{in}$ & \verb|$\prom{u}_\textind{in}$| & proměnná veličina \\
-	    \hline
-	    \verb|\komplex{...}| 	& $\komplex{u}_\textind{in}$ & \verb|$\komplex{u}_\textind{in}$| & komplexní veličina \\
-	    \hline
-	    \verb|\vekt{...}| 		& $\vekt{y}$ 						& \verb|$\vekt{y}$| & vektor \\
-	    \hline
-	    \verb|\matice{...}| 	& $\matice{Z}$ 						& \verb|$\matice{Z}$| & matice \\
-	    \hline
-	    \verb|\jedn{...}| 		& $\jedn{kV}$ 						& \verb|$\jedn{kV}$|\quad či\ \, \verb|\jedn{kV}| & jednotka \\
-	    \hline
-	  \end{tabular}
-  \end{center}
-\end{table}
-
-
-
-%\newpage
-\section{Příkazy pro sazbu symbolů}
-
-\begin{itemize}
-  \item
-    \verb|\E|, \verb|\eul| -- sazba Eulerova čísla: $\eul$,
-  \item
-    \verb|\J|, \verb|\jmag|, \verb|\I|, \verb|\imag| -- sazba imaginární jednotky: $\jmag$, $\imag$,
-  \item
-    \verb|\dif| -- sazba diferenciálu: $\dif$,
-  \item
-    \verb|\sinc| -- sazba funkce: $\sinc$.
-  \item
-    \verb|\mikro| -- sazba symbolu mikro stojatým písmem\footnote{znak pochází z~balíčku \texttt{textcomp}}: $\mikro$.
-
-\end{itemize}
-%
-Všechny symboly jsou určeny pro matematický mód, vyjma \verb|\mikro|, jenž je\\ použitelný rovněž v~textovém módu.
-
-
-
-
-
-
-\chapter{Druhá příloha}
-
-\begin{figure}[!h]
-  \begin{center}
-    \includegraphics[scale=0.5]{obrazky/ZlepseneWilsonovoZrcadloNPN}
-  \end{center}
-  \caption{Zlepšené Wilsonovo proudové zrcadlo.}
-\end{figure}
-
-Pro sazbu vektorových obrázků přímo v~\LaTeX{}u je možné doporučit balíček \href{https://www.ctan.org/pkg/pgf}{\texttt{TikZ}}.
-Příklady sazby je možné najít na \href{http://www.texample.net/tikz/examples/}{\TeX{}ample}.
-Pro vyzkoušení je možné použít programy QTikz nebo TikzEdt.
-
-
-
-
-\chapter{Příklad sazby zdrojových kódů}
-
-\section{Balíček \texttt{listings}}
-
-Pro vysázení zdrojových souborů je možné použít balíček \href{https://www.ctan.org/pkg/listings}{\texttt{listings}}.
-Balíček zavádí nové prostředí \texttt{lstlisting} pro sazbu zdrojových kódů, jako například:
-%
-\begin{lstlisting}[language={[LaTeX]TeX}]
-\section{Balíček lstlistings}
-Pro vysázení zdrojových souborů je možné použít
-	balíček \href{https://www.ctan.org/pkg/listings}%
-	{\texttt{listings}}.
-Balíček zavádí nové prostředí \texttt{lstlisting} pro
-	sazbu zdrojových kódů.
+\subsection{Instalace závislostí}
+\noindent Instalace následujících knihoven je nutností, jelikož jsou přímými závislostmi nástroje trafgen. Výjimkou je knihovna \texttt{libssh}, na které je závislý slovníkový útok.
+\begin{lstlisting}[language=bash]
+dnf -y install flex bison libnl3-devel libssh-devel
 \end{lstlisting}
-%
-Podporuje množství programovacích jazyků.
-Kód k~vysázení může být načítán přímo ze zdrojových souborů.
-Umožňuje vkládat čísla řádků nebo vypisovat jen vybrané úseky kódu.
-Např.:
 
-\noindent
-Zkratky jsou sázeny v~prostředí \texttt{seznamzkratek}:
-\label{lst:zkratky}
-\lstinputlisting[language={[LaTeX]TeX},nolol,numbers=left,firstline=1,lastline=1]{text/zkratky.tex}
-%
-Šířka textu druhého parametru \verb|KolikMista| udává šířku prvního sloupce se zkratkami.
-Proto by měla být zadávána nejdelší zkratka nebo symbol.
-
-\iflanguage{czech}{\shorthandoff{-}}{}
-%\iflanguage{slovak}{\shorthandoff{-}}{}
-\lstinputlisting[language={[LaTeX]TeX},frame=single,caption={Ukázka sazby zkratek},label=lst:symfvz,numbers=left,linerange={bsymfvz-\%\%\%\ esymfvz},includerangemarker=false]{text/zkratky.tex}
-%\iflanguage{slovak}{\shorthandon{-}}{}
-\iflanguage{czech}{\shorthandon{-}}{}
-
-\noindent
-Ukončení seznamu je provedeno ukončením prostředí:
-\lstinputlisting[language={[LaTeX]TeX},nolol,numbers=left,firstnumber=22,linerange=22]{text/zkratky.tex}
-
-\vspace{\fill}
-
-\noindent
-{\bf Poznámka k~výpisům s~použitím volby jazyka \verb|czech| nebo \verb|slovak|:}\newline
-Pokud Váš zdrojový kód obsahuje znak spojovníku \verb|-|, pak překlad může skončit chybou.
-Ta je způsobená tím, že znak \verb|-| je v~českém nebo slovenském nastavení balíčku \verb|babel| tzv.\ aktivním znakem.
-Přepněte znak \verb|-| na neaktivní příkazem \verb|\shorthandoff{-}| těsně před výpisem a hned za ním jej vraťte na aktivní příkazem \verb|\shorthandon{-}|.
-Podobně jako to je ukázáno ve zdrojovém kódu šablony.
-
-
-\clearpage
-
-%\section{Výpis kódu prostředí Matlab}
-Na výpisu nenaleznete příklad kódu pro Matlab, na výpisu \ref{lst:priklad.vypis.kodu.C} zase pro jazyk~C.
-
-\lstnewenvironment{matlab}[1][]{%
-\iflanguage{czech}{\shorthandoff{-}}{}%
-\iflanguage{slovak}{\shorthandoff{-}}{}%
-\lstset{language=Matlab,numbers=left,#1}%
-}{%
-\iflanguage{slovak}{\shorthandon{-}}{}%
-\iflanguage{czech}{\shorthandon{-}}{}%
-}
-
-
-
-\noindent
-\begin{minipage}{\linewidth}
-
-
-%\section{Výpis kódu jazyka C}
-
-\begin{lstlisting}[frame=single,numbers=right,caption={Příklad implementace první kanonické formy v~jazyce C.},label=lst:priklad.vypis.kodu.C,basicstyle=\ttfamily\small, keywordstyle=\color{black}\bfseries\underbar,]
-// první kanonická forma
-short fxdf2t( short coef[][5], short sample)
-{
-	static int v1[SECTIONS] = {0,0},v2[SECTIONS] = {0,0};
-	int x, y, accu;
-	short k;
-
-	x = sample;
-	for( k = 0; k < SECTIONS; k++){
-		accu = v1[k] >> 1;
-		y = _sadd( accu, _smpy( coef[k][0], x));
-		y = _sshl(y, 1) >> 16;
-
-		accu = v2[k] >> 1;
-		accu = _sadd( accu, _smpy( coef[k][1], x));
-		accu = _sadd( accu, _smpy( coef[k][2], y));
-		v1[k] = _sshl( accu, 1);
-
-		accu = _smpy( coef[k][3], x);
-		accu = _sadd( accu, _smpy( coef[k][4], y));
-		v2[k] = _sshl( accu, 1);
-
-		x = y;
-	}
-	return( y);
-}
+\noindent Dále je třeba nainstalovat nástroje potřebné ke kompilaci kódu.
+\begin{lstlisting}[language=bash]
+dnf -y install make pkg-config gcc-c++
 \end{lstlisting}
-\end{minipage}
+
+\noindent Chceme-li sestavit dokumentaci k nástroji DoSgen, je nutné mít nainstalován balíček \texttt{rubygem-ronn}, jež zajišťuje konverzi manuálové stránky z jednoduše formátovaného souboru v jazyce Markdown do formátu \texttt{roff}, který je používán pro psaní manuálových stránek.
+
+\begin{lstlisting}[language=bash]
+dnf -y install rubygem-ronn
+\end{lstlisting}
+
+\noindent Webové rozhraní je závislé na \texttt{nodejs} a \texttt{npm} balíčcích.
+\begin{lstlisting}[language=bash]
+dnf -y install nodejs npm
+\end{lstlisting}
 
 
+
+\noindent Instalace následujících balíčků je pouze volitelné, jde o užitečné nástroje, které najdou své místo vedle nástroje DoSgen.
+\begin{lstlisting}[language=bash]
+dnf -y install tcptrack nmap httping john iftop nload \
+ntp net-snmp-utils iputils net-tools
+\end{lstlisting}
+
+\subsection{Kompilace}
+\noindent Dále je potřeba přeložit zdrojový kód. V rámci této práce byly vyvinuty soubory \texttt{Makefile} v každém podadresáři kořenového adresáře. V kořenovém adresáři se nachází hlavní \texttt{Makefile}, který spouští všechny Makefile obsažené v podadresářích. Tyto soubory obsahují příkazy pro kompilaci a instalaci kódu a zajišťují správné pořadí jejich vykonání.
+
+\begin{lstlisting}[language=bash]
+make
+\end{lstlisting}
+
+V rámci této práce byl vytvořen také Dockerfile, pomocí kterého lze sestavit kontejner s nainstalovaným nástrojem DoSgen. Výhoda tohoto kontejneru spočívá v tom, že procesy spuštěné v kontejneru jsou oddělené od procesů v hostitelské stanici. Tento kontejner staví na operačním systému Fedora ve verzi 27. Sestavení kontejneru a jeho spuštění lze docílit následovně.
+\begin{lstlisting}
+docker build -t <NÁZEV_OBRAZU_KONTEJNERU> .
+docker run <NÁZEV_OBRAZU_KONTEJNERU>
+\end{lstlisting}
+
+\subsection{Webové rozhraní}
+Pro spuštění webového rozhraní je nutno nainstalovat Node.js balíčky.
+\begin{lstlisting}[language=bash]
+cd dosgen-web
+make install-npm
+# nebo
+npm install
+\end{lstlisting}
+
+Chceme-li spouštět webovou aplikaci jako démona běžícího na pozadí, je nutno nainstalovat inicializační skript \texttt{dosgen-web.init} do adresáře \texttt{/etc/init.d} a enviromentální soubor do \texttt{/etc/sysconfig}. Používáme-li systém se systemd, pak namísto inicializačního skriptu instalujeme jednotku \texttt{dosgen-web.service} do složky \texttt{/usr/lib/systemd/system}.
+
+Tyto kroky není nutné provádět ručně. Pro tento účel je v Makefile patřičný cíl, který provede instalaci těchto souborů.
+\begin{lstlisting}[language=bash]
+make install
+\end{lstlisting}
+
+V souboru s proměnnými prostředí a souboru \texttt{dosgen.js} je nutno nastavit cestu k nástroji DoSgen a jeho binárnímu souboru. V těchto souborech jsou přítomny komentáře, které uživatele navedou.
+
+\subsection{Dokumentace}
+Chceme-li si zobrazit manuálovou stránku pro nástroj DoSgen, je třeba provést překlad.
+\begin{lstlisting}[language=bash]
+cd man
+make
+\end{lstlisting}
+
+\subsection{RPM balíček}
+Kořenový adresář projektu obsahuje soubor \texttt{dosgen.spec}, jež obsahuje kompletní instrukce pro sestavení RPM balíčku pro Linuxové distribuce založené na balíčkovacím systému RPM. Specfile používá příkaz \texttt{make} ke kompilaci zdrojového kódu i jeho následnou instalaci. Pro sestavení balíčku je nutno vytvořit SRPM balíček a poté spustit proces sestavení samotného RPM balíčku. Pro vytvoření výsledného balíčku je možno použít software \texttt{mock}. 
+
+\begin{lstlisting}[language=bash]
+make test-srpm
+mock -r fedora-rawhide-x86_64 \
+rpmbuild/SRPMS/dosgen-*.src.rpm
+\end{lstlisting}
+
+\section{Webové rozhraní}
+Webové rozhraní lze spustit jako službu na pozadí,
+
+\begin{lstlisting}[language=bash]
+service dosgen-web start
+\end{lstlisting}
+
+\noindent nebo lze jej spustit přímo z adresáře \texttt{dosgen-web} spuštěním inicializačního skriptu.
+
+\begin{lstlisting}[language=bash]
+./dosgen-web.init start
+\end{lstlisting}
+%todo přidat obrázek webui
+Webové rozhraní je dostupné na adrese:
+\begin{lstlisting}
+https://<IP adresa stanice>:8888
+\end{lstlisting}
+
+Po načtení webového rozhraní je nutno přihlásit se údaji zadanými v souboru \texttt{config.json}. Na hlavní stránce v panelu \texttt{Common Settings} je nutno zadat odchozí síťové rozhraní. Čas útoku a počet procesů jsou volitelné. V nabídce \texttt{Add your attack} si lze vybrat požadovaný útok a následně je uživatel vyzván k zadání parametrů pro tento útok v dalším panelu.
+
+Tlačítka \texttt{Run!} a \texttt{Stop!} slouží ke spuštění a zastavení konkrétního útoku.
+
+%TODO ?? \section{Konfigurační jazyk nástroje Trafgen}
 
 
 
 
 
 \chapter{Obsah přiloženého CD}
-Nezapomeňte uvést, co čtenář najde na přiloženém médiu.
-Je vhodné okomentovat obsah každého adresáře, specifikovat, který soubor obsahuje důležitá nastavení, který soubor je určen ke spuštění atd.
-Také je dobře napsat, v~jaké verzi software byl kód testován (např.\ Matlab 2010b).
-
-Pokud je souborů hodně a jsou organizovány ve více složkách,  je možné pro výpis adresářové struktury použít balíček \href{https://www.ctan.org/pkg/dirtree}{\texttt{dirtree}}.
-
+% TODO: vlozit pdf
 {\small
 %
 \dirtree{%.
 .1 /\DTcomment{kořenový adresář přiloženého CD}.
-.2 loga\DTcomment{loga školy a fakulty}.
-.3 FEKT-spec-color.eps.
-.3 FEKT-spec-color.pdf.
-.3 logolink-op\_vavpi.png.
-.3 RE-spec-color.eps.
-.3 RE-spec-color.pdf.
-.3 SIX\_logo\_zahlavi.png.
-.2 obrazky\DTcomment{ostatní obrázky}.
-.3 soucastky.eps.
-.3 soucastky.png.
-.3 spoje.eps.
-.3 spoje.png.
-.3 ZlepseneWilsonovoZrcadloNPN.eps.
-.3 ZlepseneWilsonovoZrcadloNPN.png.
-.3 ZlepseneWilsonovoZrcadloPNP.eps.
-.3 ZlepseneWilsonovoZrcadloPNP.png.
-.2 pdf\DTcomment{pdf stránky generované informačním systémem}.
-.3 student-desky.pdf.
-.3 student-titulka.pdf.
-.3 student-zadani.pdf.
-.2 text\DTcomment{zdrojové textové soubory}.
-.3 literatura.tex.
-.3 prilohy.tex.
-.3 reseni.tex.
-.3 uvod.tex.
-.3 vysledky.tex.
-.3 zaver.tex.
-.3 zkratky.tex.
-.2 navod-sablona\_FEKT.pdf\DTcomment{návod na používání šablony}.
-.2 obhajoba.tex\DTcomment{hlavní soubor pro sazbu prezentace k~obhajobě}.
-.2 readme.txt\DTcomment{soubor s~popisem obsahu CD}.
-.2 sablona.tex\DTcomment{hlavní soubor pro sazbu kvalifikační práce}.
-.2 thesis.sty\DTcomment{balíček pro sazbu kvalifikačních prací}.
+.2 configure.
+.2 Dockerfile.
+.2 dosgen.
+.3 argsParse.c.
+.3 argsParse.cpp.
+.3 argsParse.h.
+.3 dosgen.c.
+.3 httpFlood.cpp.
+.3 httpFlood.h.
+.3 libdos.h.
+.3 Makefile.
+.3 packet.
+.3 rudy.cpp.
+.3 rudy.h.
+.3 slowloris.cpp.
+.3 slowloris.h.
+.3 slowRead.cpp.
+.3 slowRead.h.
+.3 sshPass.c.
+.3 sshPass.h.
+.3 trafgen.
+.3 trafgen\_configs.h.
+.3 trafgenlib.h.
+.3 trafgen\_wrapper.c.
+.3 trafgen\_wrapper.h.
+.2 dosgen-ansible.
+.3 ansible.cfg.
+.3 hosts.
+.3 ntp.yml.
+.3 roles.
+.4 ntp.
+.4 snmp.
+.3 snmp.yml.
+.2 dosgen.spec.
+.2 dosgen-tools.
+.2 dosgen-web.
+.3 bin.
+.4 www.
+.3 cert.pem.
+.3 config.json.
+.3 dosgen-web.env.
+.3 dosgen-web.init.
+.3 dosgen-web.service.
+.3 key.pem.
+.3 Makefile.
+.3 package.json.
+.3 passport.js.
+.3 public.
+.4 fonts.
+.4 images.
+.4 javascripts.
+.4 stylesheets.
+.3 routes.
+.4 auth.js.
+.4 dosgen.js.
+.3 server.js.
+.3 views.
+.4 dosgen.ejs.
+.4 error.ejs.
+.4 login.ejs.
+.2 machine-provisioning.
+.3 ntpserver.
+.4 fedora14.
+.5 fedora14.ks.
+.5 installation\_command.
+.2 Makefile.
+.2 man.
+.3 dosgen.8.ronn.
+.3 Makefile.
+.3 README.md.
+.2 README.md.
 }
 }
