@@ -1,7 +1,50 @@
 % !TeX spellcheck = cs_CZ
 \chapter{Testování}
 \label{chap:testovani}
-V průběhu vývoje a testování jsem využíval nástroje Wireshark pro sledování síťového provozu mezi útočníkem a obětí. Všechny útoky byly testovány na běžné uživatelské stanici s operačním systémem Linux, konkrétně Fedora 27. Tato stanice sloužila pouze jako generátor útoků. Stanice vystupující při útoku jako \uv{reflektor} nebo \uv{amplifikátor} a \uv{oběť} jsou plně virtualizované operační systémy skrze hypervizor kernelu (KVM) přistupující ke stejnému síťovému rozhraní \texttt{vnet0}, na něž je připojena i hostitelská stanice. Toto rozhraní je od internetu odděleno prostřednictvím NAT. Pro snazší správu virtualizovaných stanic bylo použito aplikace Virtual Machine Manager ve verzi 1.4.3.
+V této kapitole je představeno testování každého z implementovaných útoků a také popis nastavení a infrastruktury laboratorní sítě vytvořené na FEKT VUT.
+
+\section{Schéma zapojení a nastavení testovací sítě}
+V laboratoři byly pro testování použity dva fyzické servery pojmenované \textit{DoSgen} a \textit{Oběť} jejichž konfigurace je uvedena v tabulce \ref{tab:hw-config-lab}. Na obou serverech je nainstalován operační systém Linux, distribuce Fedora ve verzi 28. Stanice \textit{DoSgen} vystupuje jako generátor útoků, na stanici \textit{Oběť} je nainstalován hypervizor KVM (Kernel-based Virtual Machine). Hypervizor je zde použit jelikož k vykonání požadovaných scénářů jsou požadovány minimálně tři stanice. Konkrétně útočník, amplifikátor a oběť útoku.
+
+\begin{table}[ht]
+	\centering
+	\caption{My caption}
+	\label{tab:hw-config-lab}
+	\resizebox{\textwidth}{!}{%
+		\begin{tabular}{|l|l|l|l|l|l|l|}
+			\hline
+			Označení        & Model                                                           & OS        & Procesor                                                                              & RAM   & Síťová karta                                                                        & Software \\ \hline
+			\textbf{DoSgen} & \begin{tabular}[c]{@{}l@{}}IBM\\ System\\ x3550 M2\end{tabular} & Fedora 28 & \begin{tabular}[c]{@{}l@{}}Intel(R) Xeon(R)\\ L5520,@ 2.27GHz\\ 16 jader\end{tabular} & 32 GB & \begin{tabular}[c]{@{}l@{}}2xNetXtreme\\ II BCM5709\\ Gigabit Ethernet\end{tabular} & DoSgen   \\ \hline
+			\textbf{Oběť}   & \begin{tabular}[c]{@{}l@{}}IBM System\\ x3550 M2\end{tabular}   & Fedora 28 & \begin{tabular}[c]{@{}l@{}}Intel(R) Xeon(R)\\ L5520,@ 2.27GHz\\ 16 jader\end{tabular} & 20 GB & \begin{tabular}[c]{@{}l@{}}2xNetXtreme II\\ BCM5709\\ Gigabit Ethernet\end{tabular} & qemu-kvm \\ \hline
+		\end{tabular}%
+	}
+\end{table}
+
+\begin{figure} [ht]
+	\centering
+	\includegraphics[width=0.9\textwidth]{obrazky/lab_schema.png}
+	\caption{Dotaz na NTP server s kódem žádosti 42 - monlist.}
+	\label{fig:vut-lab-schema}
+\end{figure}
+
+
+\section{Testování propustnosti sítě}
+
+\begin{table}[ht]
+	\centering
+	\caption{Propustnost mezi jednotlivými rozhraními.}
+	\label{tab:troughput-lab-interfaces}
+	\begin{tabular}{|l|l|l|l|l|}
+		\hline
+		Rozhraní & eth1 & eth0  & ens1  & ens2  \\ \hline
+		eth1     &      & 941   & 525   & 940   \\ \hline
+		eth0     & 941  &       & 19200 & 19200 \\ \hline
+		ens1     & 525  & 19200 &       & 19200 \\ \hline
+		ens2     & 940  & 19200 & 19200 &       \\ \hline
+	\end{tabular}
+\end{table}
+
+V průběhu vývoje a testování jsem využíval nástroje Wireshark pro sledování síťového provozu mezi útočníkem a obětí. Všechny útoky byly testovány na běžné uživatelské stanici s operačním systémem Linux, konkrétně Fedora 28. Tato stanice sloužila pouze jako generátor útoků. Stanice vystupující při útoku jako \uv{reflektor} nebo \uv{amplifikátor} a \uv{oběť} jsou plně virtualizované operační systémy skrze hypervizor kernelu (KVM) přistupující ke stejnému síťovému rozhraní \texttt{vnet0}, na něž je připojena i hostitelská stanice. Toto rozhraní je od internetu odděleno prostřednictvím NAT. Pro snazší správu virtualizovaných stanic bylo použito aplikace Virtual Machine Manager ve verzi 1.4.3.
 
 \section{Nastavení testovací sítě}
 %schema, testovani rychlosti-jak, varianty, tabulka rychlosti, srovnani, verdikt ktera varianta spoj. je lepsi
@@ -12,6 +55,9 @@ V průběhu vývoje a testování jsem využíval nástroje Wireshark pro sledov
 %
 %
 %
+
+
+
 \subsection{Použitý software} %strucne ke kazdemu co, k cemu, proc jsem zvolil, licence
 
 
@@ -20,9 +66,9 @@ Operační systém na kterém je spuštěn NTP sever jsem musel zvolit Fedora 14
 
 Na serveru, který slouží jako oběť tohoto útoku je spuštěn operační systém Fedora 26 Server a nainstalován Apache server ve verzi \texttt{httpd-2.4.29}. Firewall je také patřičně nakonfigurován.
 
-Dalším krokem je vygenerování falešných uživatelů dotazujících se na NTP server. To provedeme spuštěním skriptu a následně si můžeme ověřit pomocí příkazu \texttt{ntpdc}, že záznamů je požadované množství. Pro spuštění těchto příkazů je nutno mít nainstalované balíčky\texttt{net-snmp-utils} a \texttt{python3-scapy}.
+Dalším krokem je vygenerování falešných uživatelů dotazujících se na NTP server. To provedeme spuštěním skriptu a následně si můžeme ověřit pomocí příkazu \texttt{ntpdc}, že záznamů je požadované množství. Pro spuštění těchto příkazů je nutno mít nainstalované balíčky \texttt{net-snmp-utils} a \texttt{python3-scapy}.
 
-\begin{lstlisting}
+\begin{lstlisting}[language=bash]
 python3 fake_ntp_hosts.py
 ntpdc -n -c monlist 192.168.124.14 | wc -l
 \end{lstlisting}
@@ -56,7 +102,7 @@ Celá tato komunikace je zachycena na obr. \ref{fig:mon_getlist_1_wireshark_with
 
 Nutno poznamenat, že na serveru oběti musela být uměle modifikována šířka pásma a to na 100 Mbit/s v obou směrech.
 
-
+\section{Testování útoku SNMP Flood}
 
 
 
