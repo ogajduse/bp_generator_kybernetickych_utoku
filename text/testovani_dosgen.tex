@@ -4,11 +4,11 @@
 V této kapitole je představeno testování každého z implementovaných útoků a také popis nastavení a infrastruktury laboratorní sítě vytvořené na FEKT VUT.
 
 \section{Schéma zapojení a nastavení testovací sítě}
-V laboratoři byly pro testování použity dva fyzické servery pojmenované \textit{DoSgen} a \textit{Oběť} jejichž konfigurace je uvedena v tabulce \ref{tab:hw-config-lab}. Na obou serverech je nainstalován operační systém Linux, distribuce Fedora ve verzi 28. Stanice \textit{DoSgen} vystupuje jako generátor útoků, na stanici \textit{Oběť} je nainstalován hypervizor KVM (Kernel-based Virtual Machine). Hypervizor je zde použit jelikož k vykonání požadovaných scénářů jsou požadovány minimálně tři stanice. Konkrétně útočník, amplifikátor a oběť útoku.
+V laboratoři byly pro testování použity dva fyzické servery pojmenované \textit{DoSgen} (generátor) a \textit{Oběť} jejichž konfigurace je uvedena v tabulce \ref{tab:hw-config-lab}. Na obou serverech je nainstalován operační systém Linux, distribuce Fedora ve verzi 28. Stanice \textit{DoSgen} vystupuje jako generátor útoků, na stanici \textit{Oběť} je nainstalován hypervizor KVM (Kernel-based Virtual Machine). Hypervizor je zde použit jelikož k vykonání požadovaných scénářů jsou požadovány minimálně tři stanice. Konkrétně útočník, amplifikátor a oběť útoku.
 
 \begin{table}[ht]
 	\centering
-	\caption{My caption}
+	\caption{Souhrn informací o testovacích stanicích.}
 	\label{tab:hw-config-lab}
 	\resizebox{\textwidth}{!}{%
 		\begin{tabular}{|l|l|l|l|l|l|l|}
@@ -20,49 +20,57 @@ V laboratoři byly pro testování použity dva fyzické servery pojmenované \t
 	}
 \end{table}
 
+Obě použité fyzické stanice jsou vybaveny dvěma gigabitovými síťovými rozhraními \texttt{enx0} Ethernet. Prvním z nich jsou připojeny do switche, který je připojen do síťě VUT. Pro účely testování byla mezi těmito servery vytvořena izolovaná síť 192.168.2.0/24 do které se stanice připojují svými zbylými síťovými rozhraními. Server DoSgen se do této sítě připojuje pomocí rozhraní \texttt{eth1} a server Oběť skrze \texttt{eth0}.
+Názvy těchto rozhraní nekorespondují s reálnými názvy. Toto pojmenování bylo použito z důvodu názornějšího vysvětlení v následující části práce. Celé schéma zapojení je znázorněno na obrázku \ref{fig:vut-lab-schema}. Stanicím v této síti byly přiděleny následující IP adresy:
+\begin{itemize}
+	\item DoSgen: \textbf{192.168.2.101}/24
+	\item Oběť: \textbf{192.168.2.102}/24
+\end{itemize}
+
 \begin{figure} [ht]
 	\centering
 	\includegraphics[width=0.9\textwidth]{obrazky/lab_schema.png}
-	\caption{Dotaz na NTP server s kódem žádosti 42 - monlist.}
+	\caption{Schéma zapojení testovací sítě.}
 	\label{fig:vut-lab-schema}
 \end{figure}
 
 
-\section{Testování propustnosti sítě}
+Stanice vystupující při útoku jako \uv{reflektor} nebo \uv{amplifikátor} a \uv{oběť} jsou plně virtualizované operační systémy skrze hypervizor kernelu (KVM) přistupující ke stejnému síťovému rozhraní \texttt{vnet0}, na něž je připojena i hostitelská stanice. Toto rozhraní je od internetu odděleno prostřednictvím NAT. Pro snazší správu virtualizovaných stanic bylo použito aplikace Virtual Machine Manager ve verzi 1.4.3. V průběhu vývoje a testování jsem využíval nástroje Wireshark pro sledování síťového provozu mezi útočníkem a obětí.
+
+\subsection{Nastavení testovací sítě}
+Na hypervizoru bylo použito základní nastavení virtuální sítě. V tomto stavu se virtuální stanice připojují k virtuálnímu switchi v NAT módu. Tento switch je přemostěn přes most \texttt{virbr0} na fyzický síťový adaptér \texttt{eth0}. V této virtuální síti jsou virtuálním stanicím přiřazovány adresy z rozsahu 192.168.122.0/24 programem \texttt{dnsmasq}. Nutno zmínit, že hypervisor má adresu 192.168.122.1. Dále byl pro každou virtuální stanici vytvořen virtuální bridge, který přemosťuje síťová rozhraní \texttt{enp1} a  \texttt{enp2} virtuálních stanic s fyzickým síťovým rozhraním \texttt{eth0} hypervisoru. Takto připojené stanice získávají IP adresy z rozsahu 192.168.2.0/24 a to díky spuštěné službě \texttt{dnsmasq} na serveru DoSgen. Aby bylo možno přistupovat k virtuálním stanicím ze stanice DoSgen, bylo nutné na této stanici do routovací tabulky zapsat statickou cestu do sítě 192.168.122.0/24 přes IP adresu 192.168.2.102.
+
+\subsection{Testování propustnosti sítě}
+Tato kapitola se zabývá testováním propustnosti celé sítě a následně zmiňuje výhody a případné nevýhody obou výše zmíněných zapojení.
+
+Na obou fyzických serverech byl spuštěn Apache HTTP server a do jeho kořenového adresáře umístěn binární soubor o velikosti 1 GB. Následně byl z každé stanice tento soubor stažen pomocí programu \texttt{wget}, který zobrazuje rychlost stahování v jednotkách MB/s. Díky této jeho vlastnosti bylo možné změřit propustnost všech spojení v nastavené síti. Data z tohoto testování jsou uvedeny v tabulce \ref{tab:troughput-lab-interfaces}.
 
 \begin{table}[ht]
 	\centering
-	\caption{Propustnost mezi jednotlivými rozhraními.}
+	\caption{Propustnost mezi jednotlivými rozhraními (uvedeno v Mb/s).}
 	\label{tab:troughput-lab-interfaces}
 	\begin{tabular}{|l|l|l|l|l|}
 		\hline
-		Rozhraní & eth1 & eth0  & ens1  & ens2  \\ \hline
+		Rozhraní & eth1 & eth0  & enp1  & ens1  \\ \hline
 		eth1     &      & 941   & 525   & 940   \\ \hline
 		eth0     & 941  &       & 19200 & 19200 \\ \hline
-		ens1     & 525  & 19200 &       & 19200 \\ \hline
-		ens2     & 940  & 19200 & 19200 &       \\ \hline
+		enp1     & 525  & 19200 &       & 19200 \\ \hline
+		ens1     & 940  & 19200 & 19200 &       \\ \hline
 	\end{tabular}
 \end{table}
 
-V průběhu vývoje a testování jsem využíval nástroje Wireshark pro sledování síťového provozu mezi útočníkem a obětí. Všechny útoky byly testovány na běžné uživatelské stanici s operačním systémem Linux, konkrétně Fedora 28. Tato stanice sloužila pouze jako generátor útoků. Stanice vystupující při útoku jako \uv{reflektor} nebo \uv{amplifikátor} a \uv{oběť} jsou plně virtualizované operační systémy skrze hypervizor kernelu (KVM) přistupující ke stejnému síťovému rozhraní \texttt{vnet0}, na něž je připojena i hostitelská stanice. Toto rozhraní je od internetu odděleno prostřednictvím NAT. Pro snazší správu virtualizovaných stanic bylo použito aplikace Virtual Machine Manager ve verzi 1.4.3.
+Z těchto dat lze spatřit, že propustnost mezi stanicemi připojenými do virtuálního switche je 2.4 Gb/s a propustnost mezi rozhraními \texttt{eth0} a \texttt{eth1} činí 941 Mb/s. Pokud však generujeme útok ze stanice DoSgen a cílíme jej na virtuální stanici skrze virtuální switch, bude maximální propustnost limitována propustností mezi rozhraními \texttt{eth0} a \texttt{eth1}.
+Při využití přemostěného spojení skrze rozhraní \texttt{enp1} a \texttt{enp2} bylo dosaženo maximální propustnosti 525 Mb/s. Jelikož předchozí uvedené zapojení dosáhlo vyšší propustnosti, byly tyto spojení spolu se síťovými rozhraními odstraněny a při testování útoků nebyly využity.
 
-\section{Nastavení testovací sítě}
-%schema, testovani rychlosti-jak, varianty, tabulka rychlosti, srovnani, verdikt ktera varianta spoj. je lepsi
 %instalace netdata
-%virtualizace kvm
-%
 %testovani probiha z prikazoveho radku, popsat proc
-%
-%
-%
-
 
 
 \subsection{Použitý software} %strucne ke kazdemu co, k cemu, proc jsem zvolil, licence
 
-
+\newpage
 \section{Testování útoku NTP Flood}
-Operační systém na kterém je spuštěn NTP sever jsem musel zvolit Fedora 14 jejíž datum vydání bylo 2.\ 11.\ 2010. Bylo nutno zvolit takto starou verzi z důvodu opravy chyby v balíčku \texttt{ntp} v pozdějších vydáních. Nainstalován byl tedy balí \texttt{ntp-4.2.6p3}. Na tomto stroji musel být správně nakonfigurován firewall tak, abych byl schopen službu NTP kontaktovat z jiné stanice. Následně byl změněn konfigurační soubor pro NTP server způsobem popsaným v kapitole \ref{subsec:ntp_flood}.
+Operační systém na kterém je spuštěn NTP sever jsem musel zvolit Fedora 14 jejíž datum vydání bylo 2.\ 11.\ 2010. Bylo nutno zvolit takto starou verzi z důvodu opravy chyby v balíčku \texttt{ntp} v pozdějších vydáních. Nainstalován byl tedy balíček \texttt{ntp-4.2.6p3}. Na tomto stroji musel být správně nakonfigurován firewall tak, abych byl schopen službu NTP kontaktovat z jiné stanice. Následně byl změněn konfigurační soubor pro NTP server způsobem popsaným v kapitole \ref{subsec:ntp_flood}.
 
 Na serveru, který slouží jako oběť tohoto útoku je spuštěn operační systém Fedora 26 Server a nainstalován Apache server ve verzi \texttt{httpd-2.4.29}. Firewall je také patřičně nakonfigurován.
 
