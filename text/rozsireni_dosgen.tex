@@ -1,6 +1,6 @@
 % !TeX spellcheck = cs_CZ
 \chapter{Rozšíření nástroje DoSgen}
-Úkolem tohoto semestrálního projektu bylo rozšíření software generující kybernetické útoky. Tato aplikace nese název DoSgen a je napsána v jazyce C. Původním autorem této aplikace je Peter Halaška, který ji vytvořil v rámci své diplomové práce. Tento nástroj byl rozšířen v rámci diplomové práce Filipem Gregrem. Tento autor své útoky z důvodu neproveditelnosti v rámci původní struktury implementoval v jazyce C++.
+Úkolem tohoto semestrálního projektu bylo rozšíření software generující kybernetické útoky. Tato aplikace nese název DoSgen a je napsána v jazyce C. Původním autorem této aplikace je Peter Halaška, který ji vytvořil v rámci své diplomové práce \cite{Halaska2016}. Tento nástroj byl rozšířen v rámci diplomové práce Filipem Gregrem \cite{Gregr2017}. Tento autor své útoky z důvodu neproveditelnosti v rámci původní struktury implementoval v jazyce C++.
 
 Pro implementaci v rámci své práce jsem si zvolil následující útoky:
 \begin{itemize}
@@ -11,15 +11,15 @@ Pro implementaci v rámci své práce jsem si zvolil následující útoky:
 
 Teoretický popis těchto útoků je uveden v kapitole \ref{sec:implementovane_utoky}. V první fázi bylo na místě zvážení, zda-li je možno využít knihovny \texttt{LibDoS} při implementaci vlastních útoků. Výsledným zjištěním bylo, že povaha této knihovny nebrání implementaci mnou vybraných útoků.
 
-Při popisu struktury nástroje bylo čerpáno z diplomových prací Petra Halašky \cite{Halaska2016} a Filipa Gregra \cite{Gregr2017}.
+Při popisu struktury nástroje bylo čerpáno z diplomových prací Petra Halašky a Filipa Gregra \cite{Gregr2017}.
 
 Při vývoji bylo použito prostředí zmíněného v kapitole \ref{chap:testovani}.
 
 \section{Struktura nástroje}
 %tcpgen?
-Nástroj DoSgen se sestává z více komponent, které ve výsledku tvoří jeden celek. V následujících kapitolách jsou právě tyto popsány.
+Nástroj DoSgen se sestává z více komponent, které ve výsledku tvoří jeden celek. V následujících kapitolách jsou právě tyto komponenty popsány.
 
-Samotný dosgen se stará o převzetí vstupních argumentů od uživatele. Implementuje dodatečné funkce pro jejich kontrolu a zabezpečuje formátování pro další použití a jiná opatření.
+Samotný DoSgen se stará o převzetí vstupních argumentů od uživatele. Implementuje dodatečné funkce pro jejich kontrolu a zabezpečuje formátování pro další použití a jiná opatření.
 
 \subsection{Trafgen}
 Jádrem aplikace DoSgen je program Trafgen, nástroj distribuovaný v rámci sady nástrojů netsniff-ng vyvinutou Danielem Borkmannem. Netsniff-ng je určena pro operační systémy Linux, distribuována je pod licencí GNU General Public License v2.0.
@@ -67,7 +67,7 @@ Dále byl do souboru \texttt{dosgen.c} doplněn nový přepínač pro tento úto
 \subsubsection{Prerekvizity}
 Prerekvizitou tohoto útoku je správně nastavený NTP server, který je schopen odpovídat na požadavek \texttt{MON\_GETLIST\_1}. Pro tento účel byla vytvořena samostatná role pro Ansible, která nastaví NTP server do požadovaného stavu. Tato role je určena pro systém Fedora 14. Tato verze byla vybrána z důvodu přítomnosti balíčku \texttt{ntp} ve Fedora repozitářích ve verzi 4.2.6, která neobsahuje opravy, které znesnadňují použití funkce \texttt{monlist} \cite{ntpbug1532}.
 
-Prvním krokem, který role provede je vypnutí výchozích Fedora repozitářů, jelikož se odkazují na dnes již neexistující URL. Následně jsou nastaveny archivní repozitáře. Dalším krokem je instalace balíčků \texttt{ntp}, \texttt{firehol} a libselinux-python. Tyto obsahují NTP démona, firewall a podpůrný balíček pro SELinux v jazyce Python nezbytný pro spuštění dalších úloh role. 
+Prvním krokem, který role provede je vypnutí výchozích Fedora repozitářů, jelikož se odkazují na dnes již neexistující URL. Následně jsou nastaveny archivní repozitáře. Dalším krokem je instalace balíčků \texttt{ntp}, \texttt{firehol} a \texttt{libselinux-python}. Tyto obsahují NTP démona, firewall a podpůrný balíček pro SELinux v jazyce Python nezbytný pro spuštění dalších úloh role. 
 Posledním krokem je nastavení konfiguračních souborů pro NTP démona a firewall a následné restartování těchto služeb z důvodu načtení nové konfigurace.
 
 Před spuštěním samotného playbooku \texttt{ntp.yml} je nutné ujistit se, že v souboru \texttt{hosts} je v sekci \texttt{ntp} zadána správná IP adresa nebo doménové jméno NTP serveru, který chceme konfigurovat. Poté již stačí jen spustit následující příkaz.
@@ -121,11 +121,11 @@ Webové rozhraní je závislé na externích knihovnách. Tyto jsou definováný
 \subsubsection{Aktualizace a rozšíření inicializačního skriptu}
 Většina distribucí operačního systému Linux nahradila program \texttt{init} za nástroj systemd jež je spuštěn jako první proces. V těchto distribucích již nelze nadále použít inicializační skript, který slouží pro spuštění webového serveru na pozadí z důvodu odlišného přístupu \texttt{systemd} ke spouštění procesů. Z tohoto důvodu došlo k následujícím úpravám.
 
-Inicializační skript byl přemístěn do složky \texttt{dosgen-web}. Z tohoto souboru byla následně odebrána část, v níž jsou definovány proměnné prostředí pro běh serveru do souboru \texttt{dosgen-web.env}. Tento soubor je v inicializačním skriptu otevřen a proměnné prostředí jsou z něj vyexportovány. Skript byl obohacen o kontrolu práv uživatele jež jej spouští a o další kontroly, které se provádí před spuštěním samotného webového serveru.
+Inicializační skript byl přemístěn do složky \texttt{dosgen-web}. Z tohoto souboru byla následně odebrána část kódu, v níž byly definovány proměnné prostředí pro běh serveru. Tyto proměnně byly přesunuty do souboru \texttt{dosgen-web.env}. Tento soubor je v inicializačním skriptu otevřen a proměnné prostředí jsou z něj vyexportovány. Skript byl obohacen o kontrolu práv uživatele jež jej spouští a o další kontroly, které se provádí před spuštěním samotného webového serveru.
 
 Log serveru byl přemístěn z kořenového adresáře webové aplikace do \newline \texttt{/var/log/dosgen}. Soubor informující o čísle procesu, PID (process identifier), bylo přemístěno do adresáře \texttt{/var/run}.
 
-Byla přidána jednotka \texttt{dosgen-web.service}, která slouží ke spouštění, ukončování a kontrole procesu webového serveru. Ta nahrazuje inicializační skript na distribucích se systemd démonem. Tato jednotka taktéž využívá soubor s proměnnými prostředí. Stejné prostředí, v němž je server spuštěn zajišťuje maximální kompatibilita a konzistenci aplikace bez rozdílu zda je použit init skript či systemd jednotka.
+Byla přidána jednotka \texttt{dosgen-web.service}, která slouží ke spouštění, ukončování a kontrole procesu webového serveru. Ta nahrazuje inicializační skript na distribucích se systemd démonem. Tato jednotka taktéž využívá soubor s proměnnými prostředí. Stejné prostředí, v němž je server spuštěn, zajišťuje maximální kompatibilita a konzistenci aplikace bez rozdílu zda je použit init skript či systemd jednotka.
 
 \subsubsection{Přidání nově implementovaných útoků}
 Současná implementace webové aplikace umožňuje snadné přidání nově implementovaných útoků do nástroje DoSgen.

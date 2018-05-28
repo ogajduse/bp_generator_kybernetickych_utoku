@@ -70,7 +70,7 @@ Při využití přemostěného spojení skrze rozhraní \texttt{enp1} a \texttt{
 
 \newpage
 \section{Testování útoku NTP Flood}
-Operační systém na kterém je spuštěn NTP sever jsem musel zvolit Fedora 14 jejíž datum vydání bylo 2.\ 11.\ 2010. Bylo nutno zvolit takto starou verzi z důvodu opravy chyby v balíčku \texttt{ntp} v pozdějších vydáních. Nainstalován byl tedy balíček \texttt{ntp-4.2.6p3}. Na tomto stroji musel být správně nakonfigurován firewall tak, abych byl schopen službu NTP kontaktovat z jiné stanice. Následně byl změněn konfigurační soubor pro NTP server způsobem popsaným v kapitole \ref{subsec:ntp_flood}.
+Operační systém, na kterém je spuštěn NTP sever, jsem musel zvolit Fedora 14, jehož datum vydání bylo 2.\ 11.\ 2010. Bylo nutno zvolit takto starou verzi z důvodu opravy chyby v balíčku \texttt{ntp} v pozdějších vydáních. Nainstalován byl tedy balíček \texttt{ntp-4.2.6p3}. Na tomto stroji musel být správně nakonfigurován firewall tak, abych byl schopen službu NTP kontaktovat z jiné stanice. Následně byl změněn konfigurační soubor pro NTP server způsobem popsaným v kapitole \ref{subsec:ntp_flood}.
 
 Na serveru, který slouží jako oběť tohoto útoku je spuštěn operační systém Fedora 26 Server a nainstalován Apache server ve verzi \texttt{httpd-2.4.29}. Firewall je také patřičně nakonfigurován.
 
