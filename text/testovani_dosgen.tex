@@ -67,19 +67,21 @@ Při využití přemostěného spojení skrze rozhraní \texttt{enp1} a \texttt{
 
 
 \subsection{Použitý software} %strucne ke kazdemu co, k cemu, proc jsem zvolil, licence
+Pro monitorování využití CPU, paměti RAM, síťových rozhraní a jiných veličin byl použit program Netdata. Tento program běží jako démon na stanici, na které chceme statistická data sbírat. Netdata získaná data ukládá do databáze, při prohlížení je tedy možno vracet se i v čase a prohlížet historická data.
 
-\newpage
 \section{Testování útoku NTP Flood}
 Operační systém, na kterém je spuštěn NTP sever, jsem musel zvolit Fedora 14, jehož datum vydání bylo 2.\ 11.\ 2010. Bylo nutno zvolit takto starou verzi z důvodu opravy chyby v balíčku \texttt{ntp} v pozdějších vydáních. Nainstalován byl tedy balíček \texttt{ntp-4.2.6p3}. Na tomto stroji musel být správně nakonfigurován firewall tak, abych byl schopen službu NTP kontaktovat z jiné stanice. Následně byl změněn konfigurační soubor pro NTP server způsobem popsaným v kapitole \ref{subsec:ntp_flood}.
 
-Na serveru, který slouží jako oběť tohoto útoku je spuštěn operační systém Fedora 26 Server a nainstalován Apache server ve verzi \texttt{httpd-2.4.29}. Firewall je také patřičně nakonfigurován.
+Na serveru, který slouží jako oběť tohoto útoku je spuštěn operační systém Fedora 28 Server a nainstalován Apache server ve verzi \texttt{httpd-2.4.29}. Firewall je také patřičně nakonfigurován.
 
-Dalším krokem je vygenerování falešných uživatelů dotazujících se na NTP server. To provedeme spuštěním skriptu a následně si můžeme ověřit pomocí příkazu \texttt{ntpdc}, že záznamů je požadované množství. Pro spuštění těchto příkazů je nutno mít nainstalované balíčky \texttt{net-snmp-utils} a \texttt{python3-scapy}.
+Dalším krokem je vygenerování falešných uživatelů dotazujících se na NTP server. To provedeme spuštěním skriptu a následně si můžeme ověřit pomocí příkazu \texttt{ntpdc}, že záznamů je požadované množství. Pro spuštění těchto příkazů je nutno mít nainstalované balíčky \texttt{ntp} v libovolné verzi a \texttt{python3-scapy}.
 
 \begin{lstlisting}[language=bash]
 python3 fake_ntp_hosts.py
 ntpdc -n -c monlist 192.168.124.14 | wc -l
 \end{lstlisting}
+
+\newpage
 
 \noindent V tomto okamžiku nic nebrání spuštění útoku a to následovně:
 \begin{lstlisting}
@@ -96,7 +98,7 @@ Nyní je NTP server zahlcován dotazy. Odpověďi na ně zasílá na IP adresu o
 	\label{fig:dosgen_run_ntp-img}
 \end{figure}
 
-Při sledování provozu v programu Wireshark můžeme vidět, že na NTP server je vyslán požadavek \uv{monlist} a NTP server na něj odpovídá, přičemž zamění zdrojovou adresu zamění za cílovou a naopak a paket je tak vyslán na server oběti, která o něj nejeví zájem, tudíž na každý z nich odpovídá ICMP zprávou typu 3 s kódem 9 (Host administratively prohibited). Server je tak zaměstnán odesíláním těchto zpráv a je tedy vyčerpána šířka pásma, dochází k DoS útoku.
+Při sledování provozu v programu Wireshark můžeme vidět, že na NTP server je vyslán požadavek \uv{monlist} a NTP server na něj odpovídá, přičemž zamění zdrojovou adresu zamění za cílovou a naopak a paket je tak vyslán na server oběti, která o něj nejeví zájem, tudíž na každý z nich odpovídá ICMP zprávou typu 3 s kódem 9 (Host administratively prohibited).
 
 \begin{figure} [h]
 	\centering
@@ -108,13 +110,76 @@ Při sledování provozu v programu Wireshark můžeme vidět, že na NTP server
 
 Celá tato komunikace je zachycena na obr. \ref{fig:mon_getlist_1_wireshark_with_icmp_and_reply-img}. Pakety s číslem 508797 a 508798 jsou vygenerované nástrojem DoSgen. Následující tři pakety, tedy pakety s číslem 508802-508804 jsou odpovědí NTP serveru. Tato odpověď obsahuje pouze 13 hostů, v případě, že nám server vrátí 600 hostů, odpověď od serveru bude mnohonásobně větší.
 
-Nutno poznamenat, že na serveru oběti musela být uměle modifikována šířka pásma a to na 100 Mbit/s v obou směrech.
+Trafgen dokáže v případě konfigurace NTP paketu generovat provoz o velikosti 300 Mb/s. Tento fakt není na škodu, jelikož trafgen generuje stále větší počet požadavků, než je jeden NTP server schopen obsloužit. Vezměme na vědomí, že nejstěžejnějším bodem při realizaci tohoto útoku je samotný NTP server, na kterém záleží, jak velkým objemem dat bude stanice oběti zahlcena. Jeden NTP server je schopen vygenerovat provoz o velikosti 100 Mb/s.
+
+Na základě toho byl při testování použit větší počet NTP serverů, zahlcující jedinou oběť a spuštěn stejný počet instancí DoSgenu. Každá instance generovala provoz za použití jednoho jádra.
+
+Testovací scénář započal s počtem 5 NTP serverů. V tomto případě NTP servery dokázaly vygenerovat provoz o velikosti 219 Mb/s. Po celou dobu útoku byl na systému oběti zvýšené procentuální využití CPU. Toto chování je znázorněno na obrázcích \ref{fig:graph_ntp_traffic_5ampl} a \ref{fig:graph_cpu_traffic_5ampl}.
+
+
+\begin{figure} [h]
+	\centering
+	\includegraphics[width=0.9\textwidth]
+	{obrazky/grafy/graph_ntp_traffic_5ampl.png}
+	\caption{Průběh NTP útoku s 5 NTP servery, síťový provoz na straně oběti.}
+	\label{fig:graph_ntp_traffic_5ampl}
+\end{figure}
+
+\begin{figure} [h]
+	\centering
+	\includegraphics[width=0.9\textwidth]
+	{obrazky/grafy/graph_ntp_cpu_5ampl.png}
+	\caption{Průběh NTP útoku s 5 NTP servery, zatížení CPU na straně oběti.}
+	\label{fig:graph_cpu_traffic_5ampl}
+\end{figure}
+
+Následoval scénář se 6 NTP servery. V tomto případě zde došlo k anomálii, jelikož při zahlcení oběti provozem ze 6 NTP serverů je předpoklad, že vygenerovaný provoz bude vyšší, než u předchozího scénáře. Tak se však nestalo a špička tohoto scénáře je na úrovni 160 Mb/s.
+Tuto situaci přibližuje graf \ref{fig:graph_ntp_traffic_5ampl_vs6ampl}.
+
+\begin{figure} [h]
+	\centering
+	\includegraphics[width=0.9\textwidth]
+	{obrazky/grafy/graph_ntp_traffic_5ampl_vs6ampl.png}
+	\caption{Porovnání průběhu NTP útoku s 5 a 6 NTP servery, síťový provoz na straně oběti.}
+	\label{fig:graph_ntp_traffic_5ampl_vs6ampl}
+\end{figure}
+
+Toto chování připisuji virtuálnímu switchi, který se choval nestandardně i při útoku za použití jednoho NTP serveru. Toto chování spočívalo ve zvýšené odezvě při komunikaci mezi klienty ve stejné síti, přičemž tito klienti neparticipovali na útoku.
+
+Testování tohoto útoku je vhodnější na fyzické infrastruktuře, která se dá lépe konfigurovat a poskytne vyšší výkon než poskytuje virtuální switch hypervizoru.
 
 \section{Testování útoku SNMP Flood}
+Testování tohoto útoku mělo velmi stejný průběh jako testování útoku předešlého. Tedy bylo vytvořeno 8 virtuálních stanic se stejnou konfigurací. Tyto stanice vystupovaly v síti jako SNMP agenti. Útočník, DoSgen, na ně zasílal dotazy s podvrženou IP adresou. Tento provoz byl agentem amplifikován a zasílán na stanici oběti. Agenti byli nakonfigurováni dle postupu uvedeného v kapitole \ref{subsec:snmp_flood_impl}.
+
+U tohoto scénáře byla zaznamenána stejná anomálie, jako ve scénáři s protokolem NTP. Největší objem dat zaslaný agenty v jednu chvíli byl za použití 7 agentů. Zatížení procesoru oběti je znázorněno na obrázku \ref{fig:graph_snmp_cpu_5ampl} a počet paketů přijatých na síťovém rozhraní oběti v Mb/s na obrázku \ref{fig:graph_snmp_traffic_5ampl}.
+
+\begin{figure} [h]
+	\centering
+	\includegraphics[width=0.9\textwidth]
+	{obrazky/grafy/graph_ntp_traffic_7ampl.png}
+	\caption{Průběh SNMP útoku se 7 SNMP agenty, síťový provoz na straně oběti.}
+	\label{fig:graph_snmp_traffic_5ampl}
+\end{figure}
+
+\begin{figure} [h]
+	\centering
+	\includegraphics[width=0.9\textwidth]
+	{obrazky/grafy/graph_ntp_cpu_7ampl.png}
+	\caption{Průběh SNMP útoku se 7 SNMP agenty, zatížení CPU na straně oběti.}
+	\label{fig:graph_snmp_cpu_5ampl}
+\end{figure}
 
 
 
 \section{Testování útoku SSDP Flood}
+Tento útok byl testován  stejným způsobem jako předchozí dva útoky. V testovací síti bylo přítomno 5 UPnP zařízení, jedna oběť a generátor.
 
+V tomto případě byla síť zahlcena natolik, že žádná ze stanic v síti nebyla schopna kontaktovat jinou stanici v síti. Z obrázku \ref{fig:ping_ntp_5_ampl} je tato situace zřejmá. První 4 odpovědi na ICMP echo byly úspěšné s časem pod 0 ms. Čtvrtá odpověď od stanice 192.168.122.210 byla doručena v čase, kdy útok započal. Odpověď na následné dotazy již nebyly stanici, která zasílala ICMP echo doručeny. 
 
-%ntpdc -n -c monlist 3.cz.pool.ntp.org
+\begin{figure} [h]
+	\centering
+	\includegraphics[width=0.9\textwidth]
+	{obrazky/grafy/ping_ntp_5ampl.png}
+	\caption{Test odezvy stanice v síti, ICMP ping.}
+	\label{fig:ping_ntp_5_ampl}
+\end{figure}

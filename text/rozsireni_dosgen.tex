@@ -1,12 +1,12 @@
 % !TeX spellcheck = cs_CZ
 \chapter{Rozšíření nástroje DoSgen}
-Úkolem tohoto semestrálního projektu bylo rozšíření software generující kybernetické útoky. Tato aplikace nese název DoSgen a je napsána v jazyce C. Původním autorem této aplikace je Peter Halaška, který ji vytvořil v rámci své diplomové práce \cite{Halaska2016}. Tento nástroj byl rozšířen v rámci diplomové práce Filipem Gregrem \cite{Gregr2017}. Tento autor své útoky z důvodu neproveditelnosti v rámci původní struktury implementoval v jazyce C++.
+Úkolem tohoto bakalářské práce bylo rozšíření software generující kybernetické útoky. Tato aplikace nese název DoSgen a je napsána v jazyce C. Původním autorem této aplikace je Peter Halaška, který ji vytvořil v rámci své diplomové práce \cite{Halaska2016}. Tento nástroj byl rozšířen v rámci diplomové práce Filipem Gregrem \cite{Gregr2017}. Tento autor své útoky z důvodu neproveditelnosti v rámci původní struktury implementoval v jazyce C++.
 
 Pro implementaci v rámci své práce jsem si zvolil následující útoky:
 \begin{itemize}
-	\item{NTP Flood}
-	\item{SNMP Flood}
-	\item{SSDP Flood}
+	\item{\hyperref[subsec:ntp_flood]{NTP Flood}}
+	\item{\hyperref[subsec:snmp_flood]{SNMP Flood}}
+	\item{\hyperref[subsec:ssdp_flood]{SSDP Flood}}
 \end{itemize}
 
 Teoretický popis těchto útoků je uveden v kapitole \ref{sec:implementovane_utoky}. V první fázi bylo na místě zvážení, zda-li je možno využít knihovny \texttt{LibDoS} při implementaci vlastních útoků. Výsledným zjištěním bylo, že povaha této knihovny nebrání implementaci mnou vybraných útoků.
@@ -90,6 +90,7 @@ Pro spuštění NTP útoku pomocí nástroje DoSgen využijme následující př
 
 Za parametrem \texttt{-i} následuje název rozhraní, skrze které je provoz následně generován. Parametr \texttt{-P} určuje počet jader, kolik je využito pro generování provozu, za ním následuje \texttt{--ntp} znamenající, že z dostupných útoků bude vybrán útok NTP Flood. Parametr \texttt{-s} označuje zdrojovou IP adresu, která bude uvedena v paketu, ve skutečnosti jde o IP adresu oběti. Poslední \texttt{-d} značí IP adresu NTP serveru, na který je dotaz zaslán.
 
+\label{subsec:snmp_flood_impl}
 \subsection{SNMP Flood}
 Při rozšíření nástroje DoSgen o útok SNMP flood bylo postupováno velmi podobným postupem jako při implementaci útoku NTP flood. Nejvýznamnější změna byla provedena v souboru \texttt{trafgen\_configs.h}, ve kterém je uvedena konfigurace paketu, který je používán pro samotný útok.
 
@@ -125,6 +126,8 @@ Cílová adresa může být i multicastová IP adresa, na které naslouchají v�
 
 \subsubsection{Prerekvizity}
 %todo doplnit
+
+
 
 \section{Rozšíření webového rozhraní}
 Rozšířena byla také webová aplikace, ze které může uživatel spouštět útoky pohodlně z webového prohlížeče. Byl také přepracován inicializační skript a aktualizovány balíčky, na kterých je tato webová aplikace závislá.

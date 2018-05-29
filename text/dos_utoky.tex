@@ -358,8 +358,8 @@ Komunikace probíhá prostřednictvím zpráv o připojení, odpojení (NOTIFY) 
 	\label{fig:ssdp-packets-wireshark}
 \end{figure}
 
-Útok SSDP flood využívá faktu, že do síťě lze poslat jediný multicastový rámec a odpovědět může větší počet zařízení. Dochází tedy k amplifikaci. V případě, že pozměníme, podvrhneme, zdrojovou IP adresu, odpověď od UPnP zařízení je doručena na ni. Skutečný útočník tedy neočekává žádnou odpověď. 
+Útok SSDP flood využívá faktu, že do síťě lze poslat jediný multicastový rámec a odpovědět může větší počet zařízení. Dochází tedy k amplifikaci. V případě, že pozměníme, podvrhneme zdrojovou IP adresu, odpověď od UPnP zařízení je doručena na ni. Skutečný útočník tedy neočekává žádnou odpověď. 
 
-Na obrázku \ref{fig:ssdp-packets-wireshark} lze spatřit oba typy SSDP zpráv, kdy v detailním zobrazení je paket typu NOTIFY. Tento rámec, který zapouzdřuje tento paket má velikost 517 bajtů, kdežto rámec obsahující vyhledání služby má 216 bajtů. Obecné dotazy mohou mít bez dlouhých textových řetězců mohou mít pouze kolem 150 B. Např. paket, jež je generován nástrojem DoSgen má délku 141 B.
+Na obrázku \ref{fig:ssdp-packets-wireshark} lze spatřit oba typy SSDP zpráv, kdy v detailním zobrazení je paket typu NOTIFY. Tento rámec, který zapouzdřuje tento paket, má velikost 517 bajtů, kdežto rámec obsahující vyhledání služby má 216 bajtů. Obecné dotazy bez dlouhých textových řetězců mohou mít velikost pouze kolem 150 B. Např. paket, jež je generován nástrojem DoSgen má délku 141 B.
 
 Zabezpečení před tímto druhem útoku lze realizovat prostřednictvím firewallu nebo access control listu.

@@ -1,11 +1,18 @@
 % !TeX spellcheck = cs_CZ
 \chapter{Závěr}
-V této práci se zabývám rozšířením generátoru kybernetických útoků o nové útoky. V úvodu této práce jsou definovány kybernetické útoky obecně, útoky, které následně implementuji, jsou popsány detailněji. Práce detailně popisuje typy kybernetických útoků, jejich různé formy a dělení. Je vysvětlen cíl kybernetických útoků, kdo za nimi stojí a jakým způsobem jsou vykonávany.
+V této práci se zabývám rozšířením generátoru kybernetických útoků o nové útoky. V úvodu této práce jsou definovány kybernetické útoky obecně a útoky, které následně implementuji, jsou popsány detailněji. Práce detailně popisuje typy kybernetických útoků, jejich různé formy a dělení. Je vysvětlen cíl kybernetických útoků, kdo za nimi stojí a jakým způsobem jsou vykonávány.
 
-V druhé části této se zabývám samotným popisem rozšíření nástroje DoSgen, popisuji jeho strukturu a možnosti použití pro mnou zvolené útoky. Dále se zabývám popisem implementace konkrétních útoků a jejich použitím.
+V druhé části této práce se zabývám samotným popisem rozšíření nástroje DoSgen, popisuji jeho strukturu a možnosti použití pro mnou zvolené útoky. Každý typ útoku je popsán ve vlastní kapitole, přičemž je zmíněna konkrétní vlastnost nebo zranitelnost síťového protokolu využitého při útoku případně jsou zmíněny chyby v nastavení infrastruktury, které umožňují sestavení daného útoku. Vždy je zmíněn způsob, jakým lze tomuto útoku zabránit.
 
-V poslední kapitole se věnuji testování nově implementovaných útoků. Jsou přiloženy snímky obrazovky z průběhu testování.
+V další části práce se zabývám popisem implementace konkrétních útoků a jejich použitím. Jelikož implementované útoky vyžadují určitou konfiguraci stanic, které participují na útoku, jsou zde také zmíněny prerekvizity k jednotlivým implementovaným útokům. Všechny popisované útoky lze kategorizovat jako útoky zesílené, přesněji útoky reflektované s amplifikací, přičemž vždy na útoku participují tři nebo více entit. Toto odlišuje mnou implementované útoky od již implementovaných útoků předchozími dvěma pracemi.
 
-Ve výsledku se mi podařilo implementovat a řádně otestovat pouze jeden útok, jelikož jsem neodhadl komplexnost této práce.
+V poslední části této kapitoly zmiňuji rozšíření webového rozhraní nástroje DoSgen o nové útoky. Práce na této části nástroje obnášela i úpravu komponent zajišťující spouštění webové aplikace. Byly také aktualizovány komponenty, na nichž je webové rozhraní závislé, z důvodu nálezu zranitelností v nich.
 
-Dále se plánuji zabývat implementaci zbylých nedokončených útoků, konkrétně SNMP a SSDP. Jedním z dalších mých cílů je restrukturalizace kódu, aktualizace nástroje trafgen implementovaného v DoSgenu a vytvoření manuálové stránky pro DoSgen. V neposlední řadě plánuji vytvořit RPM balíček pro Red Hat Linuxové distribuce.
+V poslední kapitole se věnuji testování nově implementovaných útoků. V první části kapitoly je představena testovací síť a její parametry. Dále jsou prezentovány výsledky testování propustnosti celé sítě.
+
+Každý útok způsobil zvýšený provoz generovaný od amplifikátoru k oběti. Lze tedy tvrdit, že útoky byly do aplikace DoSgen implementovány správně. Tyto implementované útoky tak lze použit k vyčerpání síťových prostředků oběti. Čím více amplifikátorů je útočník schopen využít, tím účinnější je tento útok.
+
+Při testování jsem narazil na problém s virtuálním switchem hypervizoru, který při generování útoku nástrojem DoSgen, způsobuje vyšší odezvu i mezi stanicemi, které neparticipují na útoku. Z tohoto lze usoudit, že pro testování tohoto útoku je lepší fyzický switch, který dokáže zátěž rozložit tak, aby stanice, které do útoku nejsou zapojeny, nebyly tímto ovlivněny.
+
+Popis testování jednotlivých útoků vhodně doplňují obrázky a grafy.
+Ani v jednom případě nedošlo k DoS serveru oběti. Při provádění útoků se však v každém z případů zvýšila doba odezvy přibližně 8krát. Popis testování jednotlivých útoků vhodně doplňují grafy a obrázky z průběhu testování.
