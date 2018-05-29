@@ -129,10 +129,10 @@ Cílová adresa může být i multicastová IP adresa, na které naslouchají v�
 \section{Rozšíření webového rozhraní}
 Rozšířena byla také webová aplikace, ze které může uživatel spouštět útoky pohodlně z webového prohlížeče. Byl také přepracován inicializační skript a aktualizovány balíčky, na kterých je tato webová aplikace závislá.
 
-\subsubsection{Aktualizace závislostí}
+\subsection{Aktualizace závislostí}
 Webové rozhraní je závislé na externích knihovnách. Tyto jsou definováný v souboru \texttt{package.json}. Bylo provedeno ověření, zda definované verze závislých knihoven neobsahují zranitelnosti. V knihovně EJS (Embedded JavaScript) ve verzi 2.3.1 byly nalezeny celkem tři zranitelnosti. Jsou to CVE-2017-1000188, CVE-2017-1000189 a CVE-2017-1000228. Pro odstranění těchto zranitelností byla tato knihovna aktualizována na novější verzi 2.5.5. Funkčnost webového rozhraní nebyla touto změnou ovlivněna.
 
-\subsubsection{Aktualizace a rozšíření inicializačního skriptu}
+\subsection{Aktualizace a rozšíření inicializačního skriptu}
 Většina distribucí operačního systému Linux nahradila program \texttt{init} za nástroj systemd jež je spuštěn jako první proces. V těchto distribucích již nelze nadále použít inicializační skript, který slouží pro spuštění webového serveru na pozadí z důvodu odlišného přístupu \texttt{systemd} ke spouštění procesů. Z tohoto důvodu došlo k následujícím úpravám.
 
 Inicializační skript byl přemístěn do složky \texttt{dosgen-web}. Z tohoto souboru byla následně odebrána část kódu, v níž byly definovány proměnné prostředí pro běh serveru. Tyto proměnně byly přesunuty do souboru \texttt{dosgen-web.env}. Tento soubor je v inicializačním skriptu otevřen a proměnné prostředí jsou z něj vyexportovány. Skript byl obohacen o kontrolu práv uživatele jež jej spouští a o další kontroly, které se provádí před spuštěním samotného webového serveru.
@@ -141,7 +141,7 @@ Log serveru byl přemístěn z kořenového adresáře webové aplikace do \newl
 
 Byla přidána jednotka \texttt{dosgen-web.service}, která slouží ke spouštění, ukončování a kontrole procesu webového serveru. Ta nahrazuje inicializační skript na distribucích se systemd démonem. Tato jednotka taktéž využívá soubor s proměnnými prostředí. Stejné prostředí, v němž je server spuštěn, zajišťuje maximální kompatibilita a konzistenci aplikace bez rozdílu zda je použit init skript či systemd jednotka.
 
-\subsubsection{Přidání nově implementovaných útoků}
+\subsection{Přidání nově implementovaných útoků}
 Současná implementace webové aplikace umožňuje snadné přidání nově implementovaných útoků do nástroje DoSgen.
 
 V souboru \texttt{dosgen-web/public/javascripts/client.js} jsou v proměnné nazvané \texttt{attacks} pomocí JSON (JavaScript Object Notation) zápisu zadány všechny dostupné útoky a jejich potřebné atributy, jak je znázorněno ve výpisu \ref{fig:dosgen-web-attack-json}. Přidání nových útoků proběhlo rozšířením této struktury.
