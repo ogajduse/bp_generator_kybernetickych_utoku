@@ -112,6 +112,20 @@ Samotné spuštění tohoto playbooku provedeme následujícím příkazem.
 ansible-playbook snmp.yml
 \end{lstlisting}
 
+\section{SSDP Flood}
+Postup rozšíření nástroje DoSgen o útok SSDP flood byl stejný jako u předchozích, mnou implementovaných útoků. Nejstěžejnější byla příprava konfiguračního souboru pro trafgen, kdy bylo nutné odladit jeho výslednou podobu tak, aby vygenerovaný paket byl bez vady. Tedy, aby obsahoval správné kontrolní součty a délky jednotlivých datových jednotek. U této konfigurace je vhodné zmínit, že je použita SSDP zpráva M-SEARCH a použitá MAC adresa 01:00:5e:7f:ff:fa je z rozsahu adres 01:00:5e:00:00:00–01:00:5e:7f:ff:ff. Tento rozsah se používá pro doručování multicastových paketů \cite{Deering1989}. 
+
+\noindent Parametry útoku jsou:
+\begin{itemize}
+	\item \textbf{s} Zdrojová IP adresa, adresa oběti, na kterou UPnP zařízení zašlou odpověď
+	\item \textbf{d} Cílová IP adresa, adresa určitého UPnP zařízení
+\end{itemize}
+
+Cílová adresa může být i multicastová IP adresa, na které naslouchají všechna UPnP zařízení v síti, nejčastěji je to adresa 239.255.255.250.
+
+\subsubsection{Prerekvizity}
+%todo doplnit
+
 \section{Rozšíření webového rozhraní}
 Rozšířena byla také webová aplikace, ze které může uživatel spouštět útoky pohodlně z webového prohlížeče. Byl také přepracován inicializační skript a aktualizovány balíčky, na kterých je tato webová aplikace závislá.
 

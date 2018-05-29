@@ -343,7 +343,23 @@ Parametry obsaženými v tomto dotazu jsou \texttt{nonrepeaters} a \texttt{max-r
 
 Tomuto útoku lze zabránit změnou \texttt{community string}u, konfigurací ACL v rámci síťové infrastruktury nebo úplným vypnutím SNMP démona.
 
-\subsection{IGMP flood}
-\label{subsec:igmp_flood}
+\subsection{SSDP flood}
+\label{subsec:ssdp_flood}
+SSDP (Simple Service Discovery Protocol) je protokol definovaný na aplikační vrstvě TCP/IP modelu. Na nižší vrstvě je použit protokol UDP. Slouží k oznámení funkcí stanice nebo vyhledání funkcí jiných stanic a přenosu těchto informací. Umožňuje tedy klientovi vyhledávat dostupné síťové služby. SSDP pro komunikaci využívá port 1900 a to buď unicast nebo multicast datagramy. Multicast adresa v IPv4 sítích je \texttt{239.255.255.250}. SSDP byl začleněn do sady síťových protokolů UPnP (Universal Plug and Play) \cite{Kopecky2007}.
+Často jej používají zařízení připojené v domácích sítích jako jsou tiskárny, chytré televize, web kamery, audio systémy nebo na serverech poskytujících síťové služby.
 
- 
+Komunikace probíhá prostřednictvím zpráv o připojení, odpojení (NOTIFY) a požadavcích na vyhledání všech dostupných periferií (M-SEARCH). Toho je využíváno ve chvíli, kdy se nové zařízení připojí do sítě a zašle do sítě dotaz na vyhledání zařízení poskytující určitou službu. Takový dotaz je proveden buď zasláním multicastu na zmíněnou adresu a port nebo zasláním unicastu na tentýž port. Informace přenášené tímto protokolem jsou formátovány stejným způsobem jako hlavička HTTP paketu.
+
+\begin{figure}[!h]
+	\begin{center}
+		\includegraphics[width=0.9\textwidth]{obrazky/ssdp_packets_wireshark.png}
+	\end{center}
+	\caption{Zachycené SSDP pakety v programu Wireshark.}
+	\label{fig:ssdp-packets-wireshark}
+\end{figure}
+
+Útok SSDP flood využívá faktu, že do síťě lze poslat jediný multicastový rámec a odpovědět může větší počet zařízení. Dochází tedy k amplifikaci. V případě, že pozměníme, podvrhneme, zdrojovou IP adresu, odpověď od UPnP zařízení je doručena na ni. Skutečný útočník tedy neočekává žádnou odpověď. 
+
+Na obrázku \ref{fig:ssdp-packets-wireshark} lze spatřit oba typy SSDP zpráv, kdy v detailním zobrazení je paket typu NOTIFY. Tento rámec, který zapouzdřuje tento paket má velikost 517 bajtů, kdežto rámec obsahující vyhledání služby má 216 bajtů. Obecné dotazy mohou mít bez dlouhých textových řetězců mohou mít pouze kolem 150 B. Např. paket, jež je generován nástrojem DoSgen má délku 141 B.
+
+Zabezpečení před tímto druhem útoku lze realizovat prostřednictvím firewallu nebo access control listu.
