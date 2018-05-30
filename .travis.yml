@@ -7,6 +7,7 @@ before_install:
 script:
 - mkdir -p _build/text
 - pdflatex -interaction=nonstopmode -halt-on-error -output-directory _build sablona-prace.tex
+- pdflatex -interaction=nonstopmode -halt-on-error -output-directory _build sablona-prace.tex
 - pdflatex -interaction=nonstopmode -halt-on-error -output-directory _build sablona-obhaj.tex
 deploy:
   provider: releases
