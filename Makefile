@@ -20,6 +20,8 @@ all : sablona-prace.pdf sablona-obhaj.pdf
 
 sablona-prace.pdf : $(REQUIREMENTS)
 	$(TEX) sablona-prace.tex
+	$(RM) sablona-prace.pdf
+	$(TEX) sablona-prace.tex
 
 sablona-obhaj.pdf :
 	$(TEX) sablona-obhaj.tex
