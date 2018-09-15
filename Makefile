@@ -25,6 +25,8 @@ sablona-prace.pdf : $(REQUIREMENTS)
 
 sablona-obhaj.pdf :
 	$(TEX) sablona-obhaj.tex
+	$(RM) sablona-obhaj.pdf
+	$(TEX) sablona-obhaj.tex
 
 clean:
 	$(RM) -r *.aux *.bbl *.blg *.log *.nav *.lof *.lol* *.lot *.out *.snm *.toc *.toa *.synctex.gz
